@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CategoryController;
 use Inertia\Inertia;
 
 // 🌐 Halaman awal (public)
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
 
         // CRUD Produk
         Route::resource('products', ProductController::class);
+
+        //CRUD Kategrori
+        Route::resource('categories', CategoryController::class);
     });
 
 require __DIR__ . '/auth.php';
