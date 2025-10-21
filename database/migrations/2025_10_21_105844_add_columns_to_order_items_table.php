@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        Schema::table('order_items', function (Blueprint $table) {
+    $table->decimal('subtotal', 10, 2)->nullable()->after('price');
+    $table->enum('status', ['pending', 'confirmed', 'shipped', 'cancelled'])->default('pending')->after('subtotal');
+});
+
     }
 
     /**
@@ -22,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::table('order_items', function (Blueprint $table) {
+            //
+        });
     }
 };
