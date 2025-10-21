@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\ProductController; // ← untuk customer
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\CategoryController;
 use Inertia\Inertia;
 
 // 🌐 Halaman awal (public)
@@ -17,9 +18,14 @@ Route::get('/', function () {
     ]);
 });
 
+// 🌾 Produk publik (untuk customer)
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
 Route::get('/history', function () {
     return Inertia::render('HistoryPembeli');
 })->name('history');
+
 
 // 🧍‍♀️ ROUTE UNTUK USER BIASA (auth wajib)
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -36,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // 🧑‍💼 ROUTE UNTUK ADMIN (auth + verified + isAdmin)
 Route::middleware(['auth', 'verified', 'isAdmin'])
     ->prefix('admin')
-    ->name('admin.') // gunakan name() bukan as(), biar lebih Laravel-standard
+    ->name('admin.')
     ->group(function () {
 
         // Dashboard admin
@@ -44,10 +50,10 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
             return Inertia::render('Admin/Dashboard');
         })->name('dashboard');
 
-        // CRUD Produk
-        Route::resource('products', ProductController::class);
+        // CRUD Produk (admin)
+        Route::resource('products', AdminProductController::class);
 
-        //CRUD Kategrori
+        // CRUD Kategori
         Route::resource('categories', CategoryController::class);
     });
 
