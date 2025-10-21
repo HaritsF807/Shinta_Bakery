@@ -29,11 +29,11 @@ class OrderController extends Controller
         }
 
         $validated = $request->validate([
-            'guest_name'        => 'nullable|string|max:255',
-            'guest_email'       => 'nullable|email|max:255',
-            'guest_phone'       => 'required|string|max:30',
-            'shipping_address'  => 'required|string|max:500',
-            'payment_method'    => 'required|in:cod,transfer',
+            'guest_name' => 'nullable|string|max:255',
+            'guest_email' => 'nullable|email|max:255',
+            'guest_phone' => 'required|string|max:30',
+            'shipping_address' => 'required|string|max:500',
+            'payment_method' => 'required|in:cod,transfer',
         ]);
 
         // 🔢 Hitung jumlah pesanan hari ini
@@ -45,34 +45,34 @@ class OrderController extends Controller
 
         // 🧍 Buat order baru
         $order = Order::create([
-            'invoice_number'   => $invoiceNumber,
-            'user_id'          => Auth::id() ?? null, // guest juga bisa
-            'guest_name'       => $validated['guest_name'] ?? null,
-            'guest_email'      => $validated['guest_email'] ?? null,
-            'guest_phone'      => $validated['guest_phone'] ?? null,
+            'invoice_number' => $invoiceNumber,
+            'user_id' => Auth::id(),
+            'guest_name' => $validated['guest_name'] ?? null,
+            'guest_email' => $validated['guest_email'] ?? null,
+            'guest_phone' => $validated['guest_phone'] ?? null,
             'shipping_address' => $validated['shipping_address'] ?? null,
-            'payment_method'   => $validated['payment_method'],
-            'total_price'      => collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']),
-            'status'           => 'pending',
+            'payment_method' => $validated['payment_method'],
+            'total_price' => collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']),
+            'status' => 'pending',
         ]);
 
         // 💽 Simpan item pesanan
         foreach ($cart as $item) {
             OrderItem::create([
-                'order_id'  => $order->id,
-                'product_id'=> $item['id'],
-                'quantity'  => $item['quantity'],
-                'price'     => $item['price'],
-                'subtotal'  => $item['price'] * $item['quantity'],
-                'status'    => 'pending',
+                'order_id' => $order->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'subtotal' => $item['price'] * $item['quantity'],
+                'status' => 'pending',
             ]);
         }
 
         // 🧹 Kosongkan keranjang
         session()->forget('cart');
 
-        // 🚀 Arahkan ke halaman detail pesanan
-        return redirect("/checkout/{$order->invoice_number}")
+        // 🚀 Arahkan ke halaman detail pesanan (tanpa error)
+        return redirect('/checkout/' . $order->invoice_number)
             ->with('success', 'Pesanan berhasil dibuat!');
     }
 
@@ -89,7 +89,7 @@ class OrderController extends Controller
             ->where('invoice_number', $invoice)
             ->firstOrFail();
 
-        if (Auth::check() && $order->user_id && $order->user_id !== Auth::id()) {
+        if (Auth::check() && $order->user_id !== Auth::id()) {
             abort(403, 'Kamu tidak punya akses ke pesanan ini.');
         }
 
