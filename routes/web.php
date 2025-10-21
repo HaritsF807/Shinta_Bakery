@@ -9,13 +9,17 @@ use Inertia\Inertia;
 
 // 🌐 Halaman awal (public)
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('LandingPage', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/history', function () {
+    return Inertia::render('HistoryPembeli');
+})->name('history');
 
 // 🧍‍♀️ ROUTE UNTUK USER BIASA (auth wajib)
 Route::middleware(['auth', 'verified'])->group(function () {
