@@ -1,7 +1,7 @@
 <template>
   <div class="font-sans">
     <!-- Header -->
-    <div>
+    <div class="navbar">
     <Navbar />
     
   </div>
@@ -26,7 +26,7 @@
     <section class="py-16 bg-amber-50 px-4">
       <div class="container mx-auto">
         <h2 class="text-2xl font-bold text-pink-600 text-center mb-10">Our Menu</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 " style="position: relative; left: 120px;">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-4 max-w-4xl mx-auto" style="position: relative; left: 120px;">
           <div v-for="item in menuItems" :key="item.title" class="bg-white p-6 rounded-lg shadow-md text-center">
             <div class=" flex items-center justify-center">
               <img :src="item.icon" alt="Menu Icon" class="w-10 h-10 object-contain" />
@@ -121,6 +121,8 @@ const menuItems = ref([
 
 <style scoped>
 
+
+
 .bg-hero {
   background-image: url('/images/LandingPage/bg hero.png');
   background-size: cover;
@@ -128,7 +130,7 @@ const menuItems = ref([
 }
 .burger {
   position: relative;
-  left: 120px;
+  left: 100px;
   top: 70px;
 }
 .flex space-x-4:hover {
