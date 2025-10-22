@@ -43,7 +43,7 @@
     <section class="py-16 bg-amber-50 px-4 py-8">
       <div class="container mx-auto flex flex-col md:flex-row items-center">
         <div class="md:w-1/2 mb-8 md:mb-0">
-          <p class="text-4xl text-pink-600 mb-4" style="font-size: 50px;">Ready to Serve Various Kinds of Food</p>
+          <p class="text-4xl text-pink-600 mb-4" style="font-size: 50px; width: 650px;line-height: 1.0;">Ready to Serve Various Kinds of Food</p>
           <p class="text-sm text-gray-700 mb-6">
             We're ready to present a wide variety of delicious cakes, from classics to modern creations, made with love and the finest ingredients.
             Come explore our catalog and find your favorite cake to complete every special occasion!
