@@ -22,6 +22,9 @@ Route::get('/', fn() => Inertia::render('LandingPage', [
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
+Route::get('/history', function () {
+    return Inertia::render('HistoryPembeli');
+})->name('history');
 // 🛒 Keranjang (guest & user)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
