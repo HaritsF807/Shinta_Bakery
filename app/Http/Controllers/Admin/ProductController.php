@@ -66,32 +66,39 @@ class ProductController extends Controller
     ]);
 }
 
-public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric|min:0',
-        'stock' => 'required|integer|min:0',
-        'status' => 'required|string|in:aktif,nonaktif',
-        'category_id' => 'required|integer|exists:categories,id',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+/**
+     * Memperbarui data produk di database.
+     */
+    public function update(Request $request, Product $product)
+    {
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'harga' => 'required|numeric',
+            'stok' => 'required|integer',
+            'status' => 'required|string',
+            'id_kategori' => 'required|exists:kategori,id_kategori',
+            'url_gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Validasi untuk gambar
+        ]);
 
-    $product = \App\Models\Product::findOrFail($id);
+        $data = $request->except('_token', '_method'); // Ambil semua data kecuali token
 
-    // kalau ada upload gambar baru
-    if ($request->hasFile('image')) {
-        $path = $request->file('image')->store('products', 'public');
-        $validated['image'] = $path;
+        // Cek apakah ada file gambar baru yang di-upload
+        if ($request->hasFile('url_gambar')) {
+            // Hapus gambar lama jika ada (opsional, tapi disarankan)
+            // if ($produk->url_gambar) {
+            //     Storage::delete($produk->url_gambar);
+            // }
+
+            // Simpan gambar baru dan update path-nya
+            $path = $request->file('url_gambar')->store('public/produk');
+            $data['url_gambar'] = $path;
+        }
+
+        $product->update($data);
+
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui.');
     }
-
-    $product->update($validated);
-
-    return redirect()
-        ->route('admin.products.index')
-        ->with('success', 'Produk berhasil diperbarui.');
-}
 
 public function destroy($id)
 {
