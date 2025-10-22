@@ -234,9 +234,7 @@ export default {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.quantity-btn:hover {
-  
-}
+
 .quantity {
     color: #333;
   font-weight: bold;

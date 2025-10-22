@@ -25,6 +25,10 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 Route::get('/history', function () {
     return Inertia::render('HistoryPembeli');
 })->name('history');
+
+Route::get('/detail', function () {
+    return Inertia::render('DetailTransaksi');
+})->name('detail');
 // 🛒 Keranjang (guest & user)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
