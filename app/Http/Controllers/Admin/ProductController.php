@@ -85,10 +85,6 @@ class ProductController extends Controller
 
         // Cek apakah ada file gambar baru yang di-upload
         if ($request->hasFile('url_gambar')) {
-            // Hapus gambar lama jika ada (opsional, tapi disarankan)
-            // if ($produk->url_gambar) {
-            //     Storage::delete($produk->url_gambar);
-            // }
 
             // Simpan gambar baru dan update path-nya
             $path = $request->file('url_gambar')->store('public/produk');

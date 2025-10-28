@@ -12,7 +12,7 @@
         <strong><a href="/" class="hover:underline">Home</a></strong>
         <strong><a href="#" class="hover:underline">Catalog</a></strong>
         <strong><a href="#" class="hover:underline">About Us</a></strong>
-        <strong><a href="#" class="hover:underline">Admin</a></strong>
+        <strong><a href="/login" class="hover:underline">Admin</a></strong>
         <strong><a href="/history" class="hover:underline">History</a></strong>
       </nav>
 
