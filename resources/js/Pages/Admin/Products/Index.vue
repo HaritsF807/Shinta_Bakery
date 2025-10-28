@@ -64,7 +64,12 @@ function deleteProduct(id) {
             >
               Edit
             </a>
-
+            <a
+              :href="`/admin/products/create`"
+              class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+            >
+              Tambah
+            </a>
             <button
               @click="deleteProduct(p.id)"
               class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition ml-2"
