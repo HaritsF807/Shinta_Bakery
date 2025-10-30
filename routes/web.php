@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\GoogleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,8 +24,8 @@ Route::get('/', fn() => Inertia::render('LandingPage', [
 /**
  * socialite auth
  */
-Route::get('/auth/{provider}', [SocialiteController::class, 'redirectToProvider']);
-Route::get('/auth/{provider}/callback', [SocialiteController::class, 'handleProvideCallback']);
+Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 // 🌾 Produk Publik
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
@@ -32,6 +33,10 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 Route::get('/history', function () {
     return Inertia::render('HistoryPembeli');
 })->name('history');
+
+Route::get('/log', function () {
+    return Inertia::render('LoginPage');
+})->name('login');
 
 Route::get('/detail', function () {
     return Inertia::render('DetailTransaksi');

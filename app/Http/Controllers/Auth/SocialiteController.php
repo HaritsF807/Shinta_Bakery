@@ -3,71 +3,58 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\SocialAccount;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\SocialAccount;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class SocialiteController extends Controller
 {
-    public function redirectToProvider($provider)
+    public function redirectToGoogle()
     {
-        return Socialite::driver($provider)->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
-    public function handleProvideCallback($provider)
+    public function handleGoogleCallback()
     {
         try {
-
-            $user = Socialite::driver($provider)->stateless()->user();
+            $user = Socialite::driver('google')->stateless()->user();
         } catch (Exception $e) {
-            return redirect()->back();
+            return redirect()->route('login')->with('error', 'Gagal login menggunakan Google.');
         }
-        // find or create user and send params user get from socialite and provider
-        $authUser = $this->findOrCreateUser($user, $provider);
 
-        // login user
-        Auth()->login($authUser, true);
+        $authUser = $this->findOrCreateUser($user);
 
-        // setelah login redirect ke dashboard
+        Auth::login($authUser, true);
+
         return redirect()->route('dashboard');
     }
 
-    public function findOrCreateUser($socialUser, $provider)
+    private function findOrCreateUser($socialUser)
     {
-        // Get Social Account
         $socialAccount = SocialAccount::where('provider_id', $socialUser->getId())
-            ->where('provider_name', $provider)
+            ->where('provider_name', 'google')
             ->first();
 
-        // Jika sudah ada
         if ($socialAccount) {
-            // return user
             return $socialAccount->user;
-
-            // Jika belum ada
-        } else {
-
-            // User berdasarkan email 
-            $user = User::where('email', $socialUser->getEmail())->first();
-
-            // Jika Tidak ada user
-            if (!$user) {
-                // Create user baru
-                $user = User::create([
-                    'name'  => $socialUser->getName(),
-                    'email' => $socialUser->getEmail()
-                ]);
-            }
-
-            // Buat Social Account baru
-            $user->socialAccounts()->create([
-                'provider_id'   => $socialUser->getId(),
-                'provider_name' => $provider
-            ]);
-
-            // return user
-            return $user;
         }
+
+        $user = User::where('email', $socialUser->getEmail())->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(),
+            ]);
+        }
+
+        $user->socialAccounts()->create([
+            'provider_id' => $socialUser->getId(),
+            'provider_name' => 'google',
+        ]);
+
+        return $user;
     }
 }

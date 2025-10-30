@@ -107,12 +107,7 @@ const submit = () => {
                     Login with Google
                 </a>
 
-                <a
-                    href="/auth/github"
-                    class="flex justify-center items-center px-4 py-2 bg-gray-800 text-white text-xs font-semibold rounded-md uppercase tracking-widest hover:bg-gray-700 transition ease-in-out duration-150"
-                >
-                    Login with GitHub
-                </a>
+                
             </div>
         </form>
     </GuestLayout>
