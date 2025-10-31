@@ -72,4 +72,10 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
         Route::resource('categories', CategoryController::class);
     });
 
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
+    Route::put('/orders/{id}', [OrderController::class, 'adminUpdate'])->name('orders.update');
+});
+
 require __DIR__ . '/auth.php';

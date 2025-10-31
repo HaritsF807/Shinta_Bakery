@@ -97,4 +97,49 @@ class OrderController extends Controller
             'order' => $order,
         ]);
     }
+
+    /**
+     * Menampilkan daftar semua pesanan untuk admin.
+     */
+    public function adminIndex()
+    {
+        $orders = Order::with('user')->latest()->paginate(10);
+
+        // Mengirim data ke halaman frontend Inertia di folder Admin
+        return Inertia::render('Admin/Orders/Index', [
+            'orders' => $orders,
+        ]);
+    }
+
+    /**
+     * Menampilkan detail satu pesanan untuk dikonfirmasi oleh admin.
+     */
+    public function adminShow($id)
+    {
+        $order = Order::with('items.product', 'user')->findOrFail($id);
+        
+        return Inertia::render('Admin/Orders/Show', [
+            'order' => $order,
+        ]);
+    }
+
+    /**
+     * INI ADALAH FUNGSI UNTUK MENGONFIRMASI PESANAN.
+     * Method ini akan dipanggil saat admin mengubah status pesanan.
+     */
+    public function adminUpdate(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|in:pending,processing,completed,cancelled',
+        ]);
+
+        $order = Order::findOrFail($id);
+        
+        // Memperbarui status pesanan di database
+        $order->update(['status' => $validated['status']]);
+
+        // Redirect kembali ke halaman detail dengan pesan sukses
+        return redirect()->route('admin.orders.show', $order->id)
+                         ->with('success', 'Status pesanan berhasil diperbarui!');
+    }
 }
