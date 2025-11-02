@@ -30,17 +30,16 @@ Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCa
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
-Route::get('/history', function () {
-    return Inertia::render('HistoryPembeli');
-})->name('history');
+// 📦 Riwayat pesanan (tanpa login)
+Route::get('/history', [OrderController::class, 'history'])->name('orders.history');
+// 📄 Detail pesanan untuk guest (berdasarkan invoice number)
+Route::get('/history/{invoice}', [OrderController::class, 'guestShow'])->name('history.show');
 
-Route::get('/log', function () {
-    return Inertia::render('LoginPage');
-})->name('login');
 
 Route::get('/detail', function () {
     return Inertia::render('DetailTransaksi');
 })->name('detail');
+
 // 🛒 Keranjang (guest & user)
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
@@ -62,7 +61,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// 🧑‍💼 Admin
 Route::middleware(['auth', 'verified', 'isAdmin'])
     ->prefix('admin')
     ->name('admin.')
@@ -70,12 +68,13 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
         Route::get('/dashboard', fn() => Inertia::render('Admin/Dashboard'))->name('dashboard');
         Route::resource('products', AdminProductController::class);
         Route::resource('categories', CategoryController::class);
+
+        // Tambahkan ini di sini ✅
+        Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
+        Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
+        Route::put('/orders/{id}', [OrderController::class, 'adminUpdate'])->name('orders.update');
     });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
-    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
-    Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
-    Route::put('/orders/{id}', [OrderController::class, 'adminUpdate'])->name('orders.update');
-});
+
 
 require __DIR__ . '/auth.php';

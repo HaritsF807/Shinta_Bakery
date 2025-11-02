@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Order extends Model
 {
@@ -24,6 +25,13 @@ class Order extends Model
         'notes',
     ];
 
+    // 🧍 Relasi ke tabel users (customer yang memesan)
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // 🧺 Relasi ke tabel order_items
     public function items()
     {
         return $this->hasMany(OrderItem::class);

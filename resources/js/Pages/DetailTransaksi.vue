@@ -1,151 +1,148 @@
-<template >
+<template>
   <div class="halaman">
-  <div class="invoice-container">
-    <!-- Invoice Header -->
-    <div class="invoice-header">
-      <img src="/logo-shinta.png" alt="Shinta Bakery Logo" class="logo" />
-      <div class="business-info">
-        
-        <div class="business-details">
-          <h1 class="business-name">Shinta Bakery</h1>
-          <p class="business-website">www.shintabakery.com</p>
-          <p class="business-email">shintabakery@email.com</p>
-          <p class="business-phone">085612884003</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Invoice Body -->
-    <div class="invoice-body">
-      <!-- Customer and Invoice Info -->
-      <div class="invoice-info">
-        <div class="customer-info">
-          <h3>Billed to</h3>
-          <p class="customer-name"><strong>Harits Fachrizal</strong></p>
-          <p>Cilacap Jawa Tengah</p>
-          <p>Indonesia</p>
-          <p>081332759012</p>
-        </div>
-        
-        <div class="invoice-details">
-          <div class="invoice-number">
-            <span>Invoice number</span>
-            <p>#AB2324-01</p>
-          </div>
-          <div class="invoice-date">
-            <span>Invoice date</span>
-            <p>01 Aug, 2023</p>
+    <div class="invoice-container">
+      <!-- Header -->
+      <div class="invoice-header">
+        <img src="/logo-shinta.png" alt="Shinta Bakery Logo" class="logo" />
+        <div class="business-info">
+          <div class="business-details">
+            <h1 class="business-name">Shinta Bakery</h1>
+            <p class="business-website">www.shintabakery.com</p>
+            <p class="business-email">shintabakery@email.com</p>
+            <p class="business-phone">085612884003</p>
           </div>
         </div>
-        <div class="total-amount">
-            <p>Rp. 55.000</p>
+      </div>
+
+      <!-- Body -->
+      <div class="invoice-body">
+        <!-- Customer + Invoice Info -->
+        <div class="invoice-info">
+          <div class="customer-info">
+            <h3>Billed to</h3>
+            <p class="customer-name">
+              <strong>{{ order.guest_name ?? order.user?.name ?? 'Customer' }}</strong>
+            </p>
+            <p>{{ order.shipping_address }}</p>
+            <p>{{ order.guest_email }}</p>
+            <p>{{ order.guest_phone }}</p>
           </div>
+
+          <div class="invoice-details">
+            <div class="invoice-number">
+              <span>Invoice number</span>
+              <p>#{{ order.invoice_number }}</p>
+            </div>
+            <div class="invoice-date">
+              <span>Invoice date</span>
+              <p>{{ formatDate(order.created_at) }}</p>
+            </div>
+          </div>
+
+          <div class="total-amount">
+            <p>Rp. {{ formatCurrency(order.total_price) }}</p>
+          </div>
+        </div>
+
+        <!-- Items -->
+        <div class="item-details">
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>ITEM DETAIL</th>
+                <th>QTY</th>
+                <th>AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in order.items" :key="index">
+                <td>
+                  <div class="item-name">{{ item.product?.name ?? 'Produk' }}</div>
+                  <button class="review-btn" @click="reviewItem(item)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87-.69 6.9L12 19l-4.31 2.15-.69-6.9-5-4.87 6.91-1.01L12 2z"
+                      />
+                    </svg>
+                    Review
+                  </button>
+                </td>
+                <td>{{ item.quantity }}</td>
+                <td>Rp. {{ formatCurrency(item.price) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2" class="total-label">Total</td>
+                <td>Rp. {{ formatCurrency(order.total_price) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
 
-      <!-- Item Details Table -->
-      <div class="item-details">
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th>ITEM DETAIL</th>
-              <th>QTY</th>
-              <th>AMOUNT</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in items" :key="index">
-              <td>
-                <div class="item-name">{{ item.name }}</div>
-                <button class="review-btn" @click="reviewItem(item)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87-.69 6.9L12 19l-4.31 2.15-.69-6.9-5-4.87 6.91-1.01L12 2z"/>
-                  </svg>
-                  Review
-                </button>
-              </td>
-              <td>{{ item.quantity }}</td>
-              <td>Rp. {{ formatCurrency(item.price) }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="2" class="total-label">Total</td>
-              <td>Rp. {{ formatCurrency(totalAmount) }}</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="print-btn" @click="printInvoice">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path
+              d="M6 18H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2">
+            </path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Print Invoice
+        </button>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-      <button class="print-btn" @click="printInvoice">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 6 2 18 2 18 9"></polyline>
-          <path d="M6 18H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"></path>
-          <rect x="6" y="14" width="12" height="8"></rect>
-        </svg>
-        Print Invoice
-      </button>
-      
-      <button class="whatsapp-btn" @click="confirmInWhatsapp">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-        </svg>
-        Confirm in Whatsapp
-      </button>
+        <button class="whatsapp-btn" @click="confirmInWhatsapp">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+            </path>
+          </svg>
+          Confirm in Whatsapp
+        </button>
+      </div>
     </div>
   </div>
-
-</div>
 </template>
 
-<script>
-export default {
-  name: 'Invoice',
-  data() {
-    return {
-      items: [
-        {
-          id: 1,
-          name: 'Vegan Chocolate Chip Cookie Dough',
-          quantity: 1,
-          price: 25000
-        },
-        {
-          id: 2,
-          name: 'Vegan Peanut Butter Cookie Dough',
-          quantity: 1,
-          price: 30000
-        }
-      ]
-    };
-  },
-  computed: {
-    totalAmount() {
-      return this.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    }
-  },
-  methods: {
-    formatCurrency(value) {
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    },
-    printInvoice() {
-      window.print();
-    },
-    confirmInWhatsapp() {
-      // In a real app, this would open WhatsApp with a pre-filled message
-      const phoneNumber = "085612884003"; // Replace with actual phone number
-      const message = `Hello, I would like to confirm my order #AB2324-01 for Rp. ${this.formatCurrency(this.totalAmount)}.`;
-      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
-    },
-    reviewItem(item) {
-      alert(`Reviewing: ${item.name}`);
-      // In a real app, this would open a review modal or redirect to a review page
-    }
-  }
-};
+<script setup>
+import { defineProps } from 'vue'
+
+const props = defineProps({
+  order: Object
+})
+
+const formatCurrency = (value) => {
+  if (!value) return '0'
+  return Number(value).toLocaleString('id-ID')
+}
+
+const formatDate = (value) => {
+  return new Date(value).toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  })
+}
+
+const printInvoice = () => {
+  window.print()
+}
+
+const confirmInWhatsapp = () => {
+  const phoneNumber = '085612884003'
+  const message = `Halo, saya ingin konfirmasi pesanan ${props.order.invoice_number} dengan total Rp. ${formatCurrency(props.order.total_price)}.`
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
+  window.open(whatsappUrl, '_blank')
+}
+
+const reviewItem = (item) => {
+  alert(`Review produk: ${item.product?.name ?? 'Produk'}`)
+}
 </script>
 
 <style scoped>

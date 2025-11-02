@@ -40,7 +40,7 @@ class OrderController extends Controller
         $today = now()->format('Y-m-d');
         $orderCountToday = Order::whereDate('created_at', $today)->count() + 1;
 
-        // 🧾 Generate kode invoice, misal: INV-2110202501
+        // 🧾 Generate kode invoice, misal: INV-0211202501
         $invoiceNumber = 'INV-' . now()->format('dmY') . str_pad($orderCountToday, 2, '0', STR_PAD_LEFT);
 
         // 🧍 Buat order baru
@@ -59,20 +59,20 @@ class OrderController extends Controller
         // 💽 Simpan item pesanan
         foreach ($cart as $item) {
             OrderItem::create([
-                'order_id'  => $order->id,
-                'product_id'=> $item['id'],
-                'quantity'  => $item['quantity'],
-                'price'     => $item['price'],
-                'subtotal'  => $item['price'] * $item['quantity'],
-                'status'    => 'pending',
+                'order_id'   => $order->id,
+                'product_id' => $item['id'],
+                'quantity'   => $item['quantity'],
+                'price'      => $item['price'],
+                'subtotal'   => $item['price'] * $item['quantity'],
+                'status'     => 'pending',
             ]);
         }
 
         // 🧹 Kosongkan keranjang
         session()->forget('cart');
 
-        // 🚀 Arahkan ke halaman detail pesanan
-        return redirect("/checkout/{$order->invoice_number}")
+        // 🚀 Arahkan ke halaman detail pesanan (DetailTransaksi.vue)
+        return redirect("/history/{$order->invoice_number}")
             ->with('success', 'Pesanan berhasil dibuat!');
     }
 
@@ -82,7 +82,7 @@ class OrderController extends Controller
         return Inertia::render('Checkout/Success');
     }
 
-    // 📄 Detail pesanan berdasarkan invoice
+    // 📄 Detail pesanan (untuk user login)
     public function show($invoice)
     {
         $order = Order::with('items.product')
@@ -98,22 +98,58 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * Menampilkan daftar semua pesanan untuk admin.
-     */
+    // 🧾 Riwayat pesanan (tanpa login, bisa cari pakai no HP / invoice)
+    public function history(Request $request)
+    {
+        $query = Order::query();
+
+        // Filter pencarian (no HP, invoice, atau status)
+        if ($search = $request->get('search')) {
+            $query->where('guest_phone', 'like', "%{$search}%")
+                  ->orWhere('invoice_number', 'like', "%{$search}%")
+                  ->orWhere('status', 'like', "%{$search}%");
+        }
+
+        $orders = $query->latest()->paginate(10)->withQueryString();
+
+        return Inertia::render('HistoryPembeli', [
+            'orders' => $orders,
+            'filters' => [
+                'search' => $search
+            ],
+        ]);
+    }
+
+    // 📜 Detail pesanan untuk guest (tanpa login)
+    public function guestShow($invoice)
+    {
+        $order = Order::with(['items.product'])
+            ->where('invoice_number', $invoice)
+            ->firstOrFail();
+
+        return Inertia::render('DetailTransaksi', [
+            'order' => $order,
+        ]);
+    }
+
+    // 📦 Daftar pesanan untuk admin
     public function adminIndex()
     {
         $orders = Order::with('user')->latest()->paginate(10);
 
-        // Mengirim data ke halaman frontend Inertia di folder Admin
         return Inertia::render('Admin/Orders/Index', [
-            'orders' => $orders,
+            'orders' => $orders->through(fn ($order) => [
+                'id' => $order->id,
+                'invoice_number' => $order->invoice_number,
+                'customer_name' => $order->user?->name ?? $order->guest_name, // ✅ fleksibel
+                'total_price' => $order->total_price,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+            ]),
         ]);
     }
 
-    /**
-     * Menampilkan detail satu pesanan untuk dikonfirmasi oleh admin.
-     */
+    // 🔍 Detail pesanan untuk admin
     public function adminShow($id)
     {
         $order = Order::with('items.product', 'user')->findOrFail($id);
@@ -123,10 +159,7 @@ class OrderController extends Controller
         ]);
     }
 
-    /**
-     * INI ADALAH FUNGSI UNTUK MENGONFIRMASI PESANAN.
-     * Method ini akan dipanggil saat admin mengubah status pesanan.
-     */
+    // 🔄 Update status pesanan oleh admin
     public function adminUpdate(Request $request, $id)
     {
         $validated = $request->validate([
@@ -134,11 +167,8 @@ class OrderController extends Controller
         ]);
 
         $order = Order::findOrFail($id);
-        
-        // Memperbarui status pesanan di database
         $order->update(['status' => $validated['status']]);
 
-        // Redirect kembali ke halaman detail dengan pesan sukses
         return redirect()->route('admin.orders.show', $order->id)
                          ->with('success', 'Status pesanan berhasil diperbarui!');
     }
