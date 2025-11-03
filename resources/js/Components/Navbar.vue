@@ -10,7 +10,7 @@
       <!-- Navigation -->
       <nav class="hidden md:flex space-x-4">
         <strong><a href="/" class="hover:underline">Home</a></strong>
-        <strong><a href="#" class="hover:underline">Catalog</a></strong>
+        <strong><a href="/products" class="hover:underline">Catalog</a></strong>
         <strong><a href="#" class="hover:underline">About Us</a></strong>
         <strong><a href="/history" class="hover:underline">History</a></strong>
         <strong><a href="/login" class="hover:underline">Login</a></strong>

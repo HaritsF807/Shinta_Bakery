@@ -47,19 +47,14 @@
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 max-w-5xl mx-auto"
         >
           <div
-            v-for="item in menuItems"
-            :key="item.title"
-            class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-1"
-          >
-            <div
-              class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-pink-50 rounded-full"
-            >
-              <img :src="item.icon" alt="Menu Icon" class="w-10 h-10" />
-            </div>
+           v-for="category in props.categories" 
+          :key="category.id"
+          class="bg-white shadow-md rounded-xl p-4 border border-pink-200">
+            
             <h3 class="text-xl font-semibold mb-2 text-pink-700">
-              {{ item.title }}
+              {{ category.name }}
             </h3>
-            <p class="text-gray-600 text-sm mb-4">{{ item.description }}</p>
+            
             <Link
               href="/products"
               class="text-pink-600 hover:underline font-medium text-sm"
@@ -145,27 +140,13 @@
 import Navbar from "../Components/Navbar.vue";
 import { Link } from "@inertiajs/vue3";
 import { ref } from "vue";
+import { defineProps } from 'vue'
 
-const menuItems = ref([
-  {
-    title: "Snack",
-    icon: "/images/LandingPage/snack logo.png",
-    description:
-      "Delicious light bites to satisfy your cravings anytime, anywhere.",
-  },
-  {
-    title: "Food",
-    icon: "/images/LandingPage/food logo.png",
-    description:
-      "Tasty and freshly made meals to fill your day with energy and joy.",
-  },
-  {
-    title: "Drinks",
-    icon: "/images/LandingPage/drink logo.png",
-    description:
-      "Refreshing beverages to keep you cool and energized throughout the day.",
-  },
-]);
+const props = defineProps({
+  categories: Array
+})
+
+
 </script>
 
 <style scoped>

@@ -17,6 +17,13 @@ function deleteProduct(id) {
   <div class="p-6">
     <Head title="Daftar Produk" />
 
+    <a
+              :href="`/admin/products/create`"
+              class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+            >
+              Tambah
+            </a>
+
     <h1 class="text-2xl font-bold mb-4">Daftar Produk</h1>
 
     <table class="min-w-full border">
@@ -64,12 +71,7 @@ function deleteProduct(id) {
             >
               Edit
             </a>
-            <a
-              :href="`/admin/products/create`"
-              class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-            >
-              Tambah
-            </a>
+            
             <button
               @click="deleteProduct(p.id)"
               class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition ml-2"

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -14,12 +15,17 @@ use Inertia\Inertia;
 
 
 // 🌐 Halaman Awal
-Route::get('/', fn() => Inertia::render('LandingPage', [
-    'canLogin' => Route::has('login'),
-    'canRegister' => Route::has('register'),
-    'laravelVersion' => Application::VERSION,
-    'phpVersion' => PHP_VERSION,
-]));
+Route::get('/', function () {
+    $categories = Category::all(); // ambil semua kategori dari database
+
+    return Inertia::render('LandingPage', [
+        'categories' => $categories,
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
 
 /**
  * socialite auth

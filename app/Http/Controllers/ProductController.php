@@ -9,22 +9,19 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // urutkan: produk aktif dan stok > 0 di atas, sisanya di bawah
-        $products = Product::orderByRaw("
-            CASE 
-                WHEN status = 'aktif' AND stock > 0 THEN 1
-                ELSE 2
-            END
-        ")->latest()->get();
+        $products = Product::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Products/Index', [
-            'products' => $products,
+            'products' => $products
         ]);
     }
 
     public function show($id)
-    {
-        $product = Product::with('category')->findOrFail($id);
-        return Inertia::render('Products/Show', ['product' => $product]);
-    }
+{
+    $product = Product::with('category')->findOrFail($id);
+
+    return Inertia::render('Products/Show', [
+        'product' => $product,
+    ]);
+}
 }
