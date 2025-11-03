@@ -5,12 +5,12 @@
 
     <!-- 🌸 Hero Section -->
     <section
-      class="bg-hero text-white py-20 px-6 md:px-12 relative overflow-hidden"
+      class="bg-hero text-white  py-20 px-6 md:px-12 relative overflow-hidden"
     >
       <div
-        class="container mx-auto flex flex-col md:flex-row items-center justify-between"
+        class="container mb-4 mx-auto flex flex-col md:flex-row items-center justify-between"
       >
-        <div class="md:w-1/2 mb-10 md:mb-0">
+        <div class="md:w-1/2 mb-10 md:mb-0 mt-4">
           <h1
             class="text-4xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg"
           >
@@ -28,11 +28,11 @@
           </Link>
         </div>
 
-        <div class="md:w-1/2 flex justify-center">
+        <div class="md:w-1/2 flex justify-center ">
           <img
             src="/images/LandingPage/hero asset.png"
             alt="Cakes"
-            class="w-96 md:w-[500px] animate-float"
+            class="w-100 md:w-[650px] absolute bottom-0 right-0"
           />
         </div>
       </div>
@@ -75,7 +75,7 @@
       <div
         class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-10"
       >
-        <div class="md:w-1/2">
+        <div class="md:w-1/2 px-8">
           <h2 class="text-4xl font-bold text-pink-600 mb-4 leading-tight">
             Ready to Serve <br />
             Various Kinds of Food
