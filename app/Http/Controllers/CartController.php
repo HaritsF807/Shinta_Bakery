@@ -14,27 +14,35 @@ class CartController extends Controller
     }
 
     public function add(Request $request, $id)
-    {
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
 
-        $cart = session()->get('cart', []);
+    $cart = session()->get('cart', []);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => 1,
-                'image' => $product->image ?? null,
-            ];
-        }
+    // ambil qty dari request, default 1
+    $quantity = max((int) $request->input('quantity', 1), 1);
 
-        session()->put('cart', $cart);
-
-        return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
+    if (isset($cart[$id])) {
+        // kalau produk sudah ada, tambahkan sesuai qty
+        $cart[$id]['quantity'] += $quantity;
+    } else {
+        // kalau belum ada, tambahkan produk baru ke keranjang
+        $cart[$id] = [
+            'id'       => $product->id,
+            'name'     => $product->name,
+            'price'    => $product->price,
+            'quantity' => $quantity,
+            'image'    => $product->image ?? null,
+        ];
     }
+
+    session()->put('cart', $cart);
+
+    // respons inertial atau redirect tergantung kebutuhan
+    return redirect()->route('cart.index')
+        ->with('success', "{$product->name} (x{$quantity}) berhasil ditambahkan ke keranjang!");
+}
+
 
     public function remove($id)
     {
