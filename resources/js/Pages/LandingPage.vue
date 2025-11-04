@@ -10,7 +10,7 @@
       <div
         class="container mb-4 mx-auto flex flex-col md:flex-row items-center justify-between"
       >
-        <div class="md:w-1/2 mb-10 md:mb-0 mt-4">
+        <div class="md:w-1/2 mt-4 md:mb-4 relative top-12">
           <h1
             class="text-4xl md:text-6xl font-bold mb-4 leading-tight drop-shadow-lg"
           >
@@ -28,11 +28,11 @@
           </Link>
         </div>
 
-        <div class="md:w-1/2 flex justify-center ">
+        <div class="md:w-1/2 flex justify-center  ">
           <img
             src="/images/LandingPage/hero asset.png"
             alt="Cakes"
-            class="w-100 md:w-[650px] absolute bottom-0 right-0"
+            class="w-240 md:w-[720px] relative top-32 left-12"
           />
         </div>
       </div>
@@ -56,10 +56,11 @@
             </h3>
             
             <Link
-              href="/products"
+              :href="`/products?category=${category.id}`"
               class="text-pink-600 hover:underline font-medium text-sm"
-              >Explore Menu →</Link
             >
+              Explore Menu →
+            </Link>
           </div>
         </div>
       </div>
@@ -137,6 +138,7 @@
 </template>
 
 <script setup>
+import SideBarKeranjang from '@/Components/SideBarKeranjang.vue'
 import Navbar from "../Components/Navbar.vue";
 import { Link } from "@inertiajs/vue3";
 import { ref } from "vue";
@@ -145,7 +147,8 @@ import { defineProps } from 'vue'
 const props = defineProps({
   categories: Array
 })
-
+const cartOpen = ref(false)
+const toggleCart = () => (cartOpen.value = !cartOpen.value)
 
 </script>
 

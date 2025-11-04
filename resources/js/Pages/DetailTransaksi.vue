@@ -121,11 +121,14 @@ const formatCurrency = (value) => {
   return Number(value).toLocaleString('id-ID')
 }
 
-const formatDate = (value) => {
-  return new Date(value).toLocaleDateString('id-ID', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
+function formatDate(datetime) {
+  const date = new Date(datetime)
+  return date.toLocaleString('id-ID', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
   })
 }
 
@@ -134,7 +137,7 @@ const printInvoice = () => {
 }
 
 const confirmInWhatsapp = () => {
-  const phoneNumber = '085612884003'
+  const phoneNumber = '62895422801347'
   const message = `Halo, saya ingin konfirmasi pesanan ${props.order.invoice_number} dengan total Rp. ${formatCurrency(props.order.total_price)}.`
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
   window.open(whatsappUrl, '_blank')
@@ -163,6 +166,8 @@ const reviewItem = (item) => {
 
 /* Header Styles */
 .invoice-header {
+  position: relative;
+  top: 20px;
   background-color: white;
   padding: 20px;
   border-radius: 10px 10px 0 0;
@@ -366,6 +371,14 @@ const reviewItem = (item) => {
   width: 20px;
   height: 20px;
 }
+@media print {
+  .print-btn,
+  .whatsapp-btn,
+  .review-btn {
+    display: none !important;
+  }
+}
+
 
 /* Responsive Design */
 @media (max-width: 600px) {

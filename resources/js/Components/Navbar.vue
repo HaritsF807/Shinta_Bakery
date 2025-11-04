@@ -11,36 +11,19 @@
       <nav class="hidden md:flex space-x-4">
         <strong><a href="/" class="hover:underline">Home</a></strong>
         <strong><a href="/products" class="hover:underline">Catalog</a></strong>
-        <strong><a href="#" class="hover:underline">About Us</a></strong>
         <strong><a href="/history" class="hover:underline">History</a></strong>
-        <strong><a href="/login" class="hover:underline">Login</a></strong>
+        <strong><a href="#" class="hover:underline">About Us</a></strong>
       </nav>
 
       <!-- Keranjang -->
       <div class="flex items-center relative">
-        <button 
-          class="ml-4 text-2xl hover:text-pink-200"
-          @click="toggleSidebar"
-        >
+      <button class="ml-4 text-2xl hover:text-pink-200">
+        <a href="/cart">
           <img src="/images/LandingPage/Shopping cart.png" alt="Keranjang">
-        </button>
+        </a>
+      </button>
 
         <!-- Overlay + Sidebar -->
-        <transition name="fade">
-          <div 
-            v-if="isSidebarOpen"
-            class="fixed inset-0 bg-black bg-opacity-50 z-40"
-            @click.self="toggleSidebar"
-          >
-            <transition name="slide">
-              <SidebarKeranjang
-                v-if="isSidebarOpen"
-                @close="toggleSidebar"
-                :cart-items="cartItems"
-              />
-            </transition>
-          </div>
-        </transition>
       </div>
     </div>
   </header>

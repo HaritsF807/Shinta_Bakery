@@ -58,4 +58,18 @@ class CartController extends Controller
         session()->forget('cart');
         return back()->with('success', 'Keranjang dikosongkan.');
     }
+    public function updateQuantity(Request $request, $id)
+{
+    $cart = session()->get('cart', []);
+    $quantity = max((int) $request->input('quantity', 1), 1);
+
+    if (isset($cart[$id])) {
+        $cart[$id]['quantity'] = $quantity; // langsung set ke nilai baru
+        session()->put('cart', $cart);
+        return back()->with('success', "Jumlah produk diperbarui!");
+    }
+
+    return back()->with('error', "Produk tidak ditemukan di keranjang.");
+}
+    
 }
