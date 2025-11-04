@@ -88,10 +88,9 @@ const formatCurrency = (value) =>
 
 <style scoped>
 .payment-history-container {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #faead8;
-  min-height: 100vh;
+  @apply font-sans bg-[#faead8] min-h-screen;
 }
+
 
 /* Konten utama */
 .main-content {

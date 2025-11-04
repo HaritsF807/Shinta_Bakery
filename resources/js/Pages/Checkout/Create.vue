@@ -5,12 +5,12 @@
         <img 
           src="logo-shinta.png" 
           alt="Shinta's Bakery Logo" 
-          class="w-30 h-20 "
+          class="w-30 h-20"
         />
       </div>
       
       <h1 class="text-xl font-bold text-gray-700 text-center mb-6">
-        Shipping Adress
+        Shipping Address
       </h1>
       
       <form @submit.prevent="submitForm" class="space-y-5">
@@ -71,9 +71,28 @@
           </select>
         </div>
 
+        <!-- ✅ Checkbox sekarang di bawah metode pembayaran -->
+        <div class="flex items-start space-x-2">
+          <input
+            id="agreement"
+            v-model="form.agreement"
+            type="checkbox"
+            class="mt-1 w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+          />
+          <label for="agreement" class="text-sm text-gray-700">
+            Saya setuju bahwa pesanan akan selesai atau siap dalam waktu setelah
+            <span class="font-semibold">2 hari</span>.
+          </label>
+        </div>
+
+        <!-- ✅ Tombol kirim -->
         <button
           type="submit"
-          class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          :disabled="!form.agreement"
+          class="w-full text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2"
+          :class="form.agreement 
+            ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' 
+            : 'bg-gray-400 cursor-not-allowed'"
         >
           <span>Buat Pesanan</span>
         </button>
@@ -91,13 +110,14 @@ const form = useForm({
   guest_phone: '',
   shipping_address: '',
   payment_method: '',
+  agreement: false, // ✅ properti checkbox
 })
 
 function submitForm() {
+  if (!form.agreement) {
+    alert('Harap centang persetujuan terlebih dahulu sebelum membuat pesanan.')
+    return
+  }
   form.post(route('checkout.store'))
 }
 </script>
-
-<style scoped>
-/* tambahan gaya opsional */
-</style>
