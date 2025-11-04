@@ -43,6 +43,11 @@ class OrderController extends Controller
         // 🧾 Generate kode invoice, misal: INV-0211202501
         $invoiceNumber = 'INV-' . now()->format('dmY') . str_pad($orderCountToday, 2, '0', STR_PAD_LEFT);
 
+        // hitung total dengan fallback untuk 'qty'
+        $totalPrice = collect($cart)->sum(function ($item) {
+            $qty = (int) ($item['quantity'] ?? $item['qty'] ?? 1);
+            return ($item['price'] ?? 0) * $qty;
+        });
         // 🧍 Buat order baru
         $order = Order::create([
             'invoice_number'   => $invoiceNumber,
@@ -57,13 +62,14 @@ class OrderController extends Controller
         ]);
 
         // 💽 Simpan item pesanan
-        foreach ($cart as $item) {
+         foreach ($cart as $item) {
+            $quantity = (int) ($item['quantity'] ?? $item['qty'] ?? 1);
             OrderItem::create([
                 'order_id'   => $order->id,
                 'product_id' => $item['id'],
-                'quantity'   => $item['quantity'],
+                'quantity'   => $quantity,
                 'price'      => $item['price'],
-                'subtotal'   => $item['price'] * $item['quantity'],
+                'subtotal'   => ($item['price'] ?? 0) * $quantity,
                 'status'     => 'pending',
             ]);
         }
