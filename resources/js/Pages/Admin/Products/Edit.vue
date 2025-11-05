@@ -16,9 +16,13 @@ const form = useForm({
   image: null
 })
 
-function submit() {
-  form.put(route('admin.products.update', props.product.id))
-}
+form.transform(data => ({
+    ...data,
+    _method: 'PUT', // Memberitahu Laravel ini sebenarnya request PUT
+}))
+.post(route('admin.products.update', product.id), {
+    forceFormData: true, // Memaksa form-data untuk file upload
+});
 
 
 </script>
