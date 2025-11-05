@@ -71,35 +71,31 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // PERBAIKAN: Sesuaikan nama kolom validasi
-        $validated = $request->validate([
-            'name' => 'required|string|max:255', // Ganti dari 'nama_produk'
-            'description' => 'nullable|string', // Ganti dari 'deskripsi'
-            'price' => 'required|numeric|min:0', // Ganti dari 'harga'
-            'stock' => 'required|integer|min:0', // Ganti dari 'stok'
-            'status' => 'required|string|in:aktif,nonaktif',
-            'category_id' => 'required|integer|exists:categories,id', // Ganti dari 'id_kategori'
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Ganti dari 'url_gambar'
+        $request->validate([
+            'nama_produk' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'harga' => 'required|numeric',
+            'stok' => 'required|integer',
+            'status' => 'required|string',
+            'id_kategori' => 'required|exists:kategori,id_kategori',
+            'url_gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Validasi untuk gambar
         ]);
 
-        // PERBAIKAN: Sesuaikan logika update gambar
-        if ($request->hasFile('image')) { // Ganti dari 'url_gambar'
-            
-            // Hapus gambar lama jika ada
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
-            }
+        $data = $request->except('_token', '_method'); // Ambil semua data kecuali token
+
+        // Cek apakah ada file gambar baru yang di-upload
+        if ($request->hasFile('url_gambar')) {
 
             // Simpan gambar baru dan update path-nya
-            $path = $request->file('image')->store('products', 'public'); // Ganti dari 'url_gambar'
-            $validated['image'] = $path; // Ganti dari 'url_gambar'
+            $path = $request->file('url_gambar')->store('public/produk');
+            $data['url_gambar'] = $path;
         }
 
-        // Update data di database
-        $product->update($validated);
+        $product->update($data);
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui.');
     }
+
 public function destroy($id)
 {
     $product = Product::findOrFail($id);
