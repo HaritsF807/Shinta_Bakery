@@ -1,91 +1,200 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
+import Navbar from "@/Components/NavbarAdmin.vue";
+import { Head, router } from "@inertiajs/vue3";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
-defineProps({
-  products: Array
-})
+// Props dari Laravel controller
+const props = defineProps({
+  products: Array,
+  categories: Array,
+  selectedCategory: [String, Number, null],
+});
+
+// State dropdown & kategori
+const showCategoryDropdown = ref(false);
+const selectedCategory = ref(props.selectedCategory || "");
 
 // 🗑️ Fungsi hapus produk
 function deleteProduct(id) {
-  if (confirm('Yakin ingin menghapus produk ini?')) {
-    router.delete(`/admin/products/${id}`)
+  if (confirm("Yakin ingin menghapus produk ini?")) {
+    router.delete(`/admin/products/${id}`);
   }
+}
+
+// ✅ Fungsi pilih kategori
+function selectCategory(cat) {
+  selectedCategory.value = cat; // ubah pilihan
+  showCategoryDropdown.value = false; // tutup dropdown
+  router.get(
+    "/admin/products",
+    { category: cat || null },
+    { preserveState: true, replace: true }
+  );
+}
+
+// 🚪 Tutup dropdown saat klik di luar area
+function closeDropdownOnOutsideClick(e) {
+  const dropdown = document.querySelector(".relative");
+  if (dropdown && !dropdown.contains(e.target)) {
+    showCategoryDropdown.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("click", closeDropdownOnOutsideClick);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", closeDropdownOnOutsideClick);
+});
+
+// 💰 Helper format Rupiah
+function formatRupiah(value) {
+  if (value == null || value === "") return "-";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(value);
 }
 </script>
 
 <template>
-  <div class="p-6">
+  <Navbar />
+  <div class="min-h-screen bg-amber-100 p-6 flex justify-center items-center relative top-16">
     <Head title="Daftar Produk" />
 
-    <a
-              :href="`/admin/products/create`"
-              class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-            >
-              Tambah
-            </a>
+    <div class="bg-pink-500 rounded-xl shadow-lg w-full max-w-6xl p-6">
+      <!-- Header -->
+      <h1 class="text-2xl font-bold text-white mb-8">Catalog</h1>
 
-    <h1 class="text-2xl font-bold mb-4">Daftar Produk</h1>
-
-    <table class="min-w-full border">
-      <thead>
-        <tr class="bg-gray-100 text-left">
-          <th class="p-2 border">ID</th>
-          <th class="p-2 border">Gambar</th>
-          <th class="p-2 border">Nama</th>
-          <th class="p-2 border">Harga</th>
-          <th class="p-2 border">Stok</th>
-          <th class="p-2 border">Status</th>
-          <th class="p-2 border text-center">Aksi</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr
-          v-for="p in products"
-          :key="p.id"
-          class="hover:bg-gray-50 transition"
-        >
-          <td class="p-2 border">{{ p.id }}</td>
-
-          <!-- 🖼️ Kolom gambar -->
-          <td class="p-2 border text-center">
-            <img
-              v-if="p.image"
-              :src="p.image.startsWith('storage') ? `/${p.image}` : `/storage/${p.image}`"
-              alt="gambar produk"
-              class="w-16 h-16 object-cover rounded mx-auto"
-            />
-            <span v-else class="text-gray-400 italic">tidak ada</span>
-          </td>
-
-          <td class="p-2 border">{{ p.name }}</td>
-          <td class="p-2 border">Rp {{ p.price.toLocaleString('id-ID') }}</td>
-          <td class="p-2 border">{{ p.stock }}</td>
-          <td class="p-2 border">{{ p.status }}</td>
-
-          <!-- 🔘 Tombol Aksi -->
-          <td class="p-2 border text-center">
-            <a
-              :href="`/admin/products/${p.id}/edit`"
-              class="inline-block bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-            >
-              Edit
-            </a>
-            
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex space-x-4">
+          <!-- Dropdown kategori -->
+          <div class="relative">
             <button
-              @click="deleteProduct(p.id)"
-              class="inline-block bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition ml-2"
+              @click.stop="showCategoryDropdown = !showCategoryDropdown"
+              class="bg-white text-gray-800 px-4 py-2 rounded-full flex items-center space-x-2 focus:outline-none"
             >
-              Hapus
+              <span>{{ selectedCategory || "Semua Kategori" }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
             </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
 
-    <!-- Pesan jika kosong -->
-    <p v-if="products.length === 0" class="text-gray-500 mt-4">
-      Belum ada produk tersedia.
-    </p>
+            <!-- Isi dropdown -->
+            <div v-if="showCategoryDropdown" class="absolute mt-2 w-full bg-white rounded-md shadow-lg z-10">
+              <div
+                @click="selectCategory('')"
+                class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+              >
+                Semua Kategori
+              </div>
+
+              <div
+                v-for="cat in categories"
+                :key="cat"
+                @click="selectCategory(cat)"
+                class="px-4 py-2 cursor-pointer hover:bg-gray-100"
+              >
+                {{ cat }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Tombol tambah -->
+          <a
+            :href="`/admin/products/create`"
+            class="bg-white text-black-500 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors absolute right-28"
+          >
+            Add Product
+          </a>
+        </div>
+      </div>
+
+      <!-- Tabel produk -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gambar</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stok</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase text-center">Aksi</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-200">
+            <tr
+              v-for="p in products"
+              :key="p.id"
+              :class="p.id % 2 === 0 ? 'bg-gray-50' : 'bg-white'"
+              class="hover:bg-gray-100 transition"
+            >
+              <!-- Gambar -->
+              <td class="px-6 py-4 text-center">
+                <img
+                  v-if="p.image"
+                  :src="p.image.startsWith('storage') ? `/${p.image}` : `/storage/${p.image}`"
+                  alt="gambar produk"
+                  class="w-16 h-16 object-cover rounded mx-auto"
+                />
+                <span v-else class="text-gray-400 italic">tidak ada</span>
+              </td>
+
+              <!-- Nama -->
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ p.name }}</td>
+
+              <!-- Harga -->
+              <td class="px-6 py-4 text-sm text-gray-700">
+                {{ formatRupiah(p.price) }}
+              </td>
+
+              <!-- Stok -->
+              <td class="px-6 py-4 text-sm text-gray-700">{{ p.stock }}</td>
+
+              <!-- Status -->
+              <td class="px-6 py-4 text-sm">
+                <span
+                  :class="{
+                    'text-green-600': p.status === 'aktif',
+                    'text-red-600': p.status === 'nonaktif',
+                  }"
+                >
+                  {{ p.status }}
+                </span>
+              </td>
+
+              <!-- Aksi -->
+              <td class="px-6 py-4 text-center">
+                <a
+                  :href="`/admin/products/${p.id}/edit`"
+                  class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-medium transition"
+                >
+                  Edit
+                </a>
+                <button
+                  @click="deleteProduct(p.id)"
+                  class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium transition ml-2"
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Jika kosong -->
+      <p v-if="products.length === 0" class="text-gray-200 mt-6 italic text-center">
+        Belum ada produk tersedia.
+      </p>
+    </div>
   </div>
 </template>

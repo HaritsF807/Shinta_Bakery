@@ -107,7 +107,7 @@
     </section>
 
     <!-- 🌸 Our Story -->
-    <section class="py-20 bg-pink-100 text-center">
+    <section id="our-story"class="py-20 bg-pink-100 text-center">
       <div class="container mx-auto max-w-3xl">
         <h2 class="text-3xl font-bold text-pink-700 mb-6">Our Story</h2>
         <p class="text-gray-700 leading-relaxed mb-8">

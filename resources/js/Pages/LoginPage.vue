@@ -80,7 +80,7 @@
           </div>
           
           <button 
-            type="submit" class="w-full bg-purple-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors mt-4"
+            type="submit" class="w-full bg-pink-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors mt-4"
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing" >
             Login
@@ -89,7 +89,7 @@
           <div class="text-center mt-4">
             <p class="text-gray-800">Not registered yet? 
               <Link :href="route('register')" class="text-indigo-600 hover:text-indigo-800 font-medium">
-                Create an account <span class="underline">SignUp</span>
+                Create an account 
               </Link>
             </p>
           </div>
@@ -97,7 +97,7 @@
       
       <div class="size-22 py-12 px-5 items-center justify-center ">
          <Link :href="route('register')">
-            <button class="bg-purple-600 hover:bg-red-700 text-white font-medium py-2 px-6 mx-20 absolute right-10 rounded-lg transition-colors">
+            <button class="bg-pink-600 hover:bg-red-700 text-white font-medium py-2 px-6 mx-20 absolute right-10 rounded-lg transition-colors">
                 Sign Up
             </button>
          </Link>

@@ -56,7 +56,7 @@
 
           <!-- Price -->
           <p class="text-2xl text-green-700 font-semibold mb-4">
-            Rp {{ product.price.toLocaleString() }}
+            Rp {{ formatRupiah(product.price) }}
           </p>
 
           <!-- Description -->
@@ -142,14 +142,15 @@
 
     <!-- Shopping Cart Icon (Top Right) -->
     <div class="fixed top-4 right-4">
+      <a href="/cart">
       <button 
         class="p-3 bg-white rounded-full shadow-lg hover:shadow-xl transition-shadow"
-        @click="viewCart"
       >
         <svg class="h-6 w-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10v8a2 2 0 002 2H5a2 2 0 002-2v-8m12-4l-4 4m0 0l-4-4m4 4V3"></path>
         </svg>
       </button>
+      </a>
     </div>
   </div>
 </template>
@@ -160,7 +161,9 @@ import { router } from '@inertiajs/vue3'
 
 // Props dari Laravel
 const props = defineProps({
-  product: Object
+  product: Object,
+  errors: Object,
+  auth: Object,
 })
 
 // State
@@ -188,6 +191,14 @@ const addToCart = () => {
 // Lihat keranjang (sementara alert)
 const viewCart = () => {
   alert('Menuju halaman keranjang...')
+}
+
+function formatRupiah(value) {
+  if (!value && value !== 0) return "0";
+  return Number(value).toLocaleString("id-ID", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
 }
 </script>
 
