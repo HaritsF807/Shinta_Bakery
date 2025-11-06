@@ -7,6 +7,7 @@ use App\Models\Category; // ⬅️ tambahkan ini
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+
 class ProductController extends Controller
 {
     public function index(Request $request)
