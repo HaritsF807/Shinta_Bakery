@@ -169,13 +169,22 @@ class OrderController extends Controller
     public function adminUpdate(Request $request, $id)
     {
         $validated = $request->validate([
-            'status' => 'required|string|in:pending,processing,completed,cancelled',
+            'status' => 'required|string|in:pending,processing,shipped,completed,cancelled',
+            'payment_status' => 'required|string|in:unpaid,paid,failed'
         ]);
 
         $order = Order::findOrFail($id);
-        $order->update(['status' => $validated['status']]);
+        
+        // Debug untuk melihat data yang diterima
+        // dd($request->all(), $validated, $order);
 
-        return redirect()->route('admin.orders.show', $order->id)
-                         ->with('success', 'Status pesanan berhasil diperbarui!');
+        $order->update([
+            'status' => $validated['status'],
+            'payment_status' => $validated['payment_status']
+        ]);
+
+        return redirect()
+            ->route('admin.orders.index')
+            ->with('success', 'Status pesanan berhasil diperbarui!');
     }
 }
