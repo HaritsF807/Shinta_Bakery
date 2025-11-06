@@ -175,16 +175,17 @@ class OrderController extends Controller
 
         $order = Order::findOrFail($id);
         
-        // Debug untuk melihat data yang diterima
-        // dd($request->all(), $validated, $order);
-
         $order->update([
             'status' => $validated['status'],
             'payment_status' => $validated['payment_status']
         ]);
 
+        
+        // ✅ KODE BARU (Gunakan ini):
+        // Arahkan kembali ke halaman detail admin untuk order yang sama
         return redirect()
-            ->route('admin.orders.index')
+            ->route('admin.orders.show', $order->id) 
             ->with('success', 'Status pesanan berhasil diperbarui!');
     }
+
 }
