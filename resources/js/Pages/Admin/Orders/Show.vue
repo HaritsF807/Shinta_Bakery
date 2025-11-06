@@ -7,6 +7,7 @@ const props = defineProps({
 
 const form = useForm({
   status: props.order.status,
+  payment_status: props.order.payment_status,
 })
 
 const updateStatus = () => {
