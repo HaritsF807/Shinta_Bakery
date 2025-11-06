@@ -73,9 +73,9 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', fn() => Inertia::render('Admin/Dashboard'))->name('dashboard');
-        Route::resource('products', AdminProductController::class);
-        Route::resource('categories', CategoryController::class);
-        Route::post('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::resource('/products', AdminProductController::class);
+        Route::resource('/categories', CategoryController::class);
+        
         // Tambahkan ini di sini ✅
         Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');

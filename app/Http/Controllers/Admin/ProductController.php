@@ -4,21 +4,41 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Models\Category; // 1. ✅ TAMBAHKAN IMPORT INI
+use Illuminate\Http\Request; // 2. ✅ TAMBAHKAN IMPORT INI
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 
 class ProductController extends Controller
 {
-    public function index()
+    /**
+     * Ubah method index kamu menjadi seperti ini
+     */
+    public function index(Request $request) // 3. ✅ INJECT Request
     {
-        $products = Product::with('category')->latest()->get();
+        // 4. ✅ BUAT QUERY BUILDER
+        $productsQuery = Product::with('category');
 
+        // 5. ✅ TAMBAHKAN LOGIKA FILTER
+        if ($request->filled('category')) {
+            $productsQuery->where('category_id', $request->category);
+        }
+
+        // 6. ✅ AMBIL HASILNYA
+        $products = $productsQuery->latest()->get();
+
+        // 7. ✅ AMBIL SEMUA KATEGORI
+        $categories = Category::all();
+
+        // 8. ✅ KIRIM categories & selectedCategory KE VIEW
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
+            'categories' => $categories, // <-- INI YANG HILANG
+            'selectedCategory' => $request->category, // <-- Untuk simpan state filter
         ]);
     }
+
 
     public function create()
 {
