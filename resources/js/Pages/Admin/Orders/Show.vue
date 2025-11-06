@@ -69,7 +69,7 @@ const updateStatus = () => {
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
-
+            
             <button
               @click="updateStatus"
               class="ml-3 bg-pink-600 text-white px-8 py-2 rounded hover:bg-pink-500 absolute right-44"
