@@ -168,6 +168,8 @@ class OrderController extends Controller
     // 🔄 Update status pesanan oleh admin
     public function adminUpdate(Request $request, $id)
     {
+        dd($request->all());
+        // Validasi input status
         $validated = $request->validate([
             'status' => 'required|string|in:pending,processing,shipped,completed,cancelled',
             'payment_status' => 'required|string|in:unpaid,paid,failed'
