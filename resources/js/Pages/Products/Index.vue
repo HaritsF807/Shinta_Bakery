@@ -43,6 +43,7 @@ function formatRupiah(value) {
     maximumFractionDigits: 0
   });
 }
+console.log("Produk dari Laravel:", props.products);
 </script>
 
 <template>
