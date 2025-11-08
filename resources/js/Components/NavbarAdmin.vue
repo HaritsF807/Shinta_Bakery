@@ -9,15 +9,16 @@
 
       <!-- Navigation -->
       <nav class="hidden md:flex space-x-4">
-        <strong><a href="/dashboard" class="hover:underline">Dashboard</a></strong>
-        <strong><a href="/admin/products" class="hover:underline">Catalog</a></strong>
+        <strong><a href="/admin/dashboard" class="hover:underline">Dashboard</a></strong>
+        <strong><a href="/admin/products" class="hover:underline">Products</a></strong>
+        <strong><a href="/admin/categories" class="hover:underline">Categories</a></strong>
         <strong><a href="/admin/orders" class="hover:underline">Orders</a></strong>
       </nav>
 
       <!-- Keranjang -->
       <div class="flex items-center relative">
       <button class="ml-4 text-2xl hover:text-pink-200">
-        <a href="/profile">
+        <a href="/admin/profile">
           <img src="/images/account_circle.png" alt="Keranjang">
         </a>
       </button>
