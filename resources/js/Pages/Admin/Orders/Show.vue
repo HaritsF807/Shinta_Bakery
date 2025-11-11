@@ -28,7 +28,7 @@ const updateStatus = () => {
       </h2>
     </template>
 
-    <div class="py-24 bg-amber-100">
+    <div class="py-24 bg-amber-100 h-screen">
       <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white shadow-sm sm:rounded-lg p-6">
           <h3 class="text-lg font-semibold mb-4">Informasi Pelanggan</h3>
@@ -72,8 +72,9 @@ const updateStatus = () => {
             
             <button
               @click="updateStatus"
-              class="ml-3 bg-pink-600 text-white px-8 py-2 rounded hover:bg-pink-500 absolute right-44"
-            >
+              class="ml-3 bg-pink-600 text-white px-8 py-2 rounded hover:bg-pink-500 relative"
+              style="left: 560px;"
+              >
               Simpan Perubahan
             </button>
           </div>

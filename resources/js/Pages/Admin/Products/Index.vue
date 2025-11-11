@@ -76,11 +76,12 @@ function formatRupiah(value) {
 <template>
   <Navbar />
   <div
-    class="min-h-screen bg-amber-100 p-6 flex justify-center items-center relative top-16"
+    class=" bg-amber-100 p-6 flex justify-center items-center relative "
+    style="height: 800px;"
   >
     <Head title="Daftar Produk" />
 
-    <div class="bg-pink-500 rounded-xl shadow-lg w-full max-w-6xl p-6">
+    <div class="bg-pink-500 rounded-xl shadow-lg w-full max-w-6xl p-6 relative top-16">
       <h1 class="text-2xl font-bold text-white mb-8">Catalog</h1>
 
       <div class="flex justify-between items-center mb-6">
@@ -125,8 +126,9 @@ function formatRupiah(value) {
 
           <a
             :href="`/admin/products/create`"
-            class="bg-white text-black-500 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors absolute right-28"
-          >
+            class="bg-white text-black-500 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition-colors relative"
+            style="left: 790px;"
+            >
             Add Product
           </a>
         </div>

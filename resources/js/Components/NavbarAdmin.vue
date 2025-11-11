@@ -1,14 +1,14 @@
 <template>
-  <header class="bg-pink-500 text-white p-4 shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
+  <header class="bg-pink-500 text-white p-4 shadow-md h-24">
+    <div class="container mx-auto flex justify-between items-center relative bottom-2">
       <!-- Logo -->
-      <div class="flex items-center space-x-2">
-        <img src="/images/LandingPage/logo shinta.png" alt="Logo" class="rounded-full" />
-        <h1 class="text-xl font-bold">Shinta Bakery</h1>
+      <div class="flex items-center space-x-2 relative right-16">
+        <img src="/images/LandingPage/logo shinta.png" alt="Logo" class="w-24" />
+        <h1 class="text-2xl font-bold">Shinta Bakery</h1>
       </div>
 
       <!-- Navigation -->
-      <nav class="hidden md:flex space-x-4">
+      <nav class="hidden md:flex space-x-4 text-xl">
         <strong><a href="/admin/dashboard" class="hover:underline">Dashboard</a></strong>
         <strong><a href="/admin/products" class="hover:underline">Products</a></strong>
         <strong><a href="/admin/categories" class="hover:underline">Categories</a></strong>
@@ -17,7 +17,7 @@
 
       <!-- Keranjang -->
       <div class="flex items-center relative">
-      <button class="ml-4 text-2xl hover:text-pink-200">
+      <button class="ml-4 text-2xl hover:text-pink-200 relative left-16">
         <a href="/admin/profile">
           <img src="/images/account_circle.png" alt="Keranjang">
         </a>
