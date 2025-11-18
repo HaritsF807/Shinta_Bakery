@@ -2,7 +2,7 @@
   <header class="bg-pink-500 text-white p-4 shadow-md h-24">
     <div class="container mx-auto flex justify-between items-center relative bottom-2">
       <!-- Logo -->
-      <div class="flex items-center space-x-2 relative right-16">
+      <div class="flex items-center space-x-2 relative left-8">
         <img src="/images/LandingPage/logo shinta.png" alt="Logo" class="w-24" />
         <h1 class="text-2xl font-bold">Shinta Bakery</h1>
       </div>
@@ -16,7 +16,7 @@
       </nav>
 
       <!-- Keranjang -->
-      <div class="flex items-center relative">
+      <div class="flex items-center relative right-24">
       <button class="ml-4 text-2xl hover:text-pink-200">
         <a href="/cart">
           <img src="/images/LandingPage/Shopping cart.png" alt="Keranjang" class="relative left-16">

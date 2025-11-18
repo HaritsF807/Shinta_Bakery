@@ -30,11 +30,11 @@
 
           <div class="invoice-details">
             <div class="invoice-number">
-              <span>Invoice number</span>
+              <span class="number">Invoice number</span>
               <p>#{{ order.invoice_number }}</p>
             </div>
             <div class="invoice-date">
-              <span>Invoice date</span>
+              <span class="date">Invoice date</span>
               <p>{{ formatDate(order.created_at) }}</p>
             </div>
           </div>
@@ -49,9 +49,9 @@
           <table class="items-table">
             <thead>
               <tr>
-                <th>ITEM DETAIL</th>
+                <th class="nama">ITEM <br> DETAIL</th>
                 <th>QTY</th>
-                <th>AMOUNT</th>
+                <th class="amount">AMOUNT</th>
               </tr>
             </thead>
             <tbody>
@@ -68,13 +68,13 @@
                   </button>
                 </td>
                 <td>{{ item.quantity }}</td>
-                <td>Rp. {{ formatCurrency(item.price) }}</td>
+                <td class="harga">Rp. {{ formatCurrency(item.price) }}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
                 <td colspan="2" class="total-label">Total</td>
-                <td>Rp. {{ formatCurrency(order.total_price) }}</td>
+                <td class="total">Rp. {{ formatCurrency(order.total_price) }}</td>
               </tr>
             </tfoot>
           </table>
@@ -125,7 +125,7 @@ function formatDate(datetime) {
   const date = new Date(datetime)
   return date.toLocaleString('id-ID', {
   day: '2-digit',
-  month: 'long',
+  month: 'numeric',
   year: 'numeric',
   hour: '2-digit',
   minute: '2-digit'
@@ -371,13 +371,174 @@ const reviewItem = (item) => {
   width: 20px;
   height: 20px;
 }
+/* ========== PRINT KHUSUS PRINTER THERMAL 58MM ========== */
 @media print {
+
+  /* Halaman kecil 58mm */
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
+
+  body, html {
+    padding: 0;
+    margin: 0;
+    width: 58mm;
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Container invoice */
+  .invoice-container {
+    width: 58mm !important;
+    padding: 0;
+    margin: 0;
+    background: white !important;
+  }
+
+  /* Hilangkan semua background warna */
+  .halaman,
+  .invoice-header,
+  .invoice-body {
+    background: white !important;
+    box-shadow: none !important;
+  }
+
+  /* Header simpel */
+  .invoice-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 5px;
+    gap: 5px;
+  }
+
+  .logo {
+    width: 35mm !important;
+    height: auto !important;
+  }
+
+  .business-details {
+    text-align: center;
+    right: 0 !important;
+  }
+
+  .business-name {
+    font-size: 14px !important;
+    margin: 0;
+  }
+
+  .business-website,
+  .business-email,
+  .business-phone {
+    font-size: 10px !important;
+    margin: 0;
+  }
+
+  /* Info invoice */
+  .invoice-body {
+    padding: 5px 5px !important;
+  }
+
+  .invoice-info {
+    display: block !important;
+    border-bottom: 1px solid #000 !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 5px !important;
+  }
+
+  .customer-info h3 {
+    font-size: 12px;
+    margin: 0 0 5px 0;
+  }
+  .customer-info p,
+  .invoice-number span,
+  .invoice-number p,
+  .invoice-date p {
+    position: relative;
+    font-size: 10px !important;
+    margin: 0;
+  }
+
+  /* Total */
+  .total-amount {
+    font-size: 16px !important;
+    text-align: right;
+    margin-top: 5px;
+    color: black !important;
+    display: none;
+  }
+
+  /* TABEL item */
+  table.items-table {
+    width: 100% !important;
+    font-size: 10px !important;
+  }
+
+  .items-table th {
+    font-size: 10px !important;
+    padding: 3px 0 !important;
+    border-bottom: 1px solid black !important;
+    gap: 2px !important;
+  }
+
+  .date{
+    position: relative;
+    left: 10px;
+    display: none;
+  }
+
+  .nama{
+    padding: 3px 0 !important;
+  }
+
+  .amount{
+    position: relative;
+    left: 10px;
+  }
+  .number{
+    display: none;
+  }
+
+  .harga{
+    position: relative;
+    left: 10px;
+    font-size: 92% !important;
+  }
+  .total{
+    font-size: 90% !important;
+  }
+  .items-table td {
+    padding: 3px 0 !important;
+    border-bottom: 1px dashed #000 !important;
+  }
+
+  .item-name {
+    font-size: 10px !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* Total baris terakhir */
+  tfoot td {
+  font-size: 11px !important;
+  font-weight: bold;
+  padding-top: 5px !important;
+  border-top: 1px solid #000 !important;
+  gap: 2px !important;
+  position: relative;
+  top: 0; /* ← FIX DI SINI */
+}
+
+  /* Tombol tidak ikut tercetak */
   .print-btn,
   .whatsapp-btn,
-  .review-btn {
+  .review-btn,
+  .action-buttons {
     display: none !important;
   }
 }
+
 
 
 /* Responsive Design */
