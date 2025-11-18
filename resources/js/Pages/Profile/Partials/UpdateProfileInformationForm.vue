@@ -3,7 +3,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { Link, useForm, usePage, router } from '@inertiajs/vue3';
 
 defineProps({
     mustVerifyEmail: {
@@ -20,6 +20,14 @@ const form = useForm({
     name: user.name,
     email: user.email,
 });
+
+const logout = () => {
+    router.post(route('logout'), {}, {
+        onSuccess: () => {
+            window.location.href = '/';
+        }
+    });
+};
 </script>
 
 <template>
@@ -112,16 +120,13 @@ const form = useForm({
 
         <!-- 🔸 Tombol Logout -->
         <div class="mt-8 border-t pt-6">
-            <form method="post" :action="route('logout')">
-                <input type="hidden" name="_token" :value="$page.props.csrf_token" />
-                <button
-                    type="submit"
-                    style="left: 1020px; bottom:330px;"
-                    class="relative inline-flex items-center px-4 py-2 bg-red-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-800 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                >
-                    Logout
-                </button>
-            </form>
+            <button
+                @click="logout"
+                type="button"
+                class="inline-flex items-center px-4 py-2 bg-red-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-800 active:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+            >
+                Logout
+            </button>
         </div>
     </section>
 </template>
