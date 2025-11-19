@@ -36,6 +36,8 @@ const closeModal = () => {
     form.clearErrors();
     form.reset();
 };
+
+
 </script>
 
 <template>
@@ -103,6 +105,7 @@ const closeModal = () => {
                     </DangerButton>
                 </div>
             </div>
+            
         </Modal>
     </section>
 </template>
