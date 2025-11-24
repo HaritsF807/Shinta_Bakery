@@ -1,6 +1,7 @@
 <template>
   <header class="bg-pink-500 text-white p-4 shadow-md h-24">
     <div class="container mx-auto flex justify-between items-center relative bottom-2">
+      
       <!-- Logo -->
       <div class="flex items-center space-x-2 relative left-8">
         <img src="/images/LandingPage/logo shinta.png" alt="Logo" class="w-24" />
@@ -8,22 +9,37 @@
       </div>
 
       <!-- Navigation -->
-      <nav class="hidden md:flex space-x-4 text-xl">
+      <nav class="hidden md:flex space-x-6 text-xl">
+
         <strong><a href="/" class="hover:underline">Home</a></strong>
         <strong><a href="/products" class="hover:underline">Catalog</a></strong>
         <strong><a href="/history" class="hover:underline">History</a></strong>
-        <strong><a href="/#our-story" class="hover:underline" style="scroll-behavior: smooth;">About Us</a></strong>
+        <strong>
+          <a href="/#our-story" class="hover:underline" style="scroll-behavior: smooth;">
+            About Us
+          </a>
+        </strong>
+
+        <!-- ⭐ Download PDF -->
+        <strong>
+          <a 
+            href="/katalog/katalog_shinta.pdf"
+            download
+            class="bg-white text-pink-600 px-3 py-1 rounded-md hover:bg-pink-200 transition"
+          >
+            Download PDF
+          </a>
+        </strong>
+
       </nav>
 
       <!-- Keranjang -->
       <div class="flex items-center relative right-24">
-      <button class="ml-4 text-2xl hover:text-pink-200">
-        <a href="/cart">
-          <img src="/images/LandingPage/Shopping cart.png" alt="Keranjang" class="relative left-16">
-        </a>
-      </button>
-
-        <!-- Overlay + Sidebar -->
+        <button class="ml-4 text-2xl hover:text-pink-200">
+          <a href="/cart">
+            <img src="/images/LandingPage/Shopping cart.png" alt="Keranjang" class="relative left-16">
+          </a>
+        </button>
       </div>
     </div>
   </header>
@@ -33,23 +49,19 @@
 import { ref } from 'vue'
 import SidebarKeranjang from '@/Components/SidebarKeranjang.vue'
 
-// State
 const isSidebarOpen = ref(false)
 
-// contoh data keranjang (sementara, biar kelihatan)
 const cartItems = ref([
   { name: 'Roti Coklat', price: 15000, quantity: 1 },
   { name: 'Donat Keju', price: 12000, quantity: 2 },
 ])
 
-// Fungsi toggle
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
 }
 </script>
 
 <style scoped>
-/* Fade background */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s ease;
 }
@@ -57,7 +69,6 @@ const toggleSidebar = () => {
   opacity: 0;
 }
 
-/* Slide sidebar */
 .slide-enter-active, .slide-leave-active {
   transition: transform 0.3s ease;
 }
@@ -65,13 +76,11 @@ const toggleSidebar = () => {
   transform: translateX(100%);
 }
 
-/* Logo */
 .rounded-full {
   height: 40px;
   width: 50px;
 }
 
-/* Header */
 header {
   position: fixed;
   top: 0;

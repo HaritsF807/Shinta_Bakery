@@ -11,16 +11,7 @@
         
         <h2 class="text-4xl md:text-5xl font-black text-gray-900">Login now</h2>
         <p class="text-xl text-gray-800 mt-4">Hi, Welcome back 👋</p>
-        
-        <a href="/auth/google" class="w-full bg-pink-300 hover:bg-pink-400 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors">
-            <img class="w-5" src="/images/mbah google.png" alt=""> Login with Google
-        </a>
-        
-        <div class="flex items-center my-6">
-          <div class="flex-1 border-t border-gray-300"></div>
-          <span class="px-4 text-gray-500 text-sm">or Login with Email</span>
-          <div class="flex-1 border-t border-gray-300"></div>
-        </div>
+      
 
         <form @submit.prevent="submit" class="space-y-6">
           <div class="space-y-2">
@@ -86,21 +77,9 @@
             Login
           </button>
           
-          <div class="text-center mt-4">
-            <p class="text-gray-800">Not registered yet? 
-              <Link :href="route('register')" class="text-indigo-600 hover:text-indigo-800 font-medium">
-                Create an account 
-              </Link>
-            </p>
-          </div>
         </form> </div>
       
       <div class="size-22 py-12 px-5 items-center justify-center ">
-         <Link :href="route('register')">
-            <button class="bg-pink-600 hover:bg-red-700 text-white font-medium py-2 px-6 mx-20 absolute right-10 rounded-lg transition-colors">
-                Sign Up
-            </button>
-         </Link>
         <img 
           class="absolute bottom-20"
           src="/images/LandingPage/asset-loginpage.png" 

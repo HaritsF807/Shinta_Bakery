@@ -83,16 +83,14 @@
             for every occasion!
           </p>
           <div class="flex gap-4">
-            <Link
-              href="/contact"
+            <a
+              href="https://wa.me/628113040033" target="_blank"
               class="px-6 py-3 bg-pink-600 text-white rounded-full font-semibold hover:bg-pink-700 transition"
-              >Contact Us</Link
-            >
-            <Link
-              href="/products"
+              >Contact Us</a>
+            <a
+              href="/products" 
               class="px-6 py-3 border border-pink-600 text-pink-600 rounded-full font-semibold hover:bg-pink-600 hover:text-white transition"
-              >View Catalog</Link
-            >
+              >View Catalog</a>
           </div>
         </div>
 

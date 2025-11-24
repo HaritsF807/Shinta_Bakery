@@ -137,7 +137,7 @@ const printInvoice = () => {
 }
 
 const confirmInWhatsapp = () => {
-  const phoneNumber = '62895422801347'
+  const phoneNumber = '628113040033'
   const message = `Halo, saya ingin konfirmasi pesanan ${props.order.invoice_number} dengan total Rp. ${formatCurrency(props.order.total_price)}.`
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
   window.open(whatsappUrl, '_blank')
