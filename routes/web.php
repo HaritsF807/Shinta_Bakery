@@ -13,7 +13,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// 🌐 Halaman Awal
 Route::get('/', function () {
     $categories = Category::all();
     return Inertia::render('LandingPage', [
@@ -66,8 +65,6 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        
-        // 👇 ROUTE DASHBOARD (Sekarang bersih, pakai Controller) 👇
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('/products', AdminProductController::class);
