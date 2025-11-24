@@ -12,7 +12,7 @@
       <nav class="hidden md:flex space-x-6 text-xl">
 
         <strong><a href="/" class="hover:underline">Home</a></strong>
-        <strong><a href="/products" class="hover:underline">Catalog</a></strong>
+        <strong><a href="/products" class="hover:underline">Products</a></strong>
         <strong><a href="/history" class="hover:underline">History</a></strong>
         <strong>
           <a href="/#our-story" class="hover:underline" style="scroll-behavior: smooth;">

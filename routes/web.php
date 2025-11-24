@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Admin\ProductAdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Auth\SocialiteController;
@@ -67,9 +68,23 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('/products', AdminProductController::class);
-        Route::resource('/categories', CategoryController::class);
-        
+        // --- CUSTOM ROUTES (place BEFORE resource to avoid collisions) ---
+        // Activate all (only products with stock > 0 will be activated)
+        Route::post('products/activate-all', [ProductAdminController::class, 'activateAll'])
+            ->name('products.activateAll');
+
+        // Optional: manual deactivate all
+        Route::post('products/deactivate-all', [ProductAdminController::class, 'deactivateAllByAdmin'])
+            ->name('products.deactivateAll');
+
+        // Optional: activate single product (with optional force)
+        Route::post('products/{id}/activate', [ProductAdminController::class, 'activateSingle'])
+            ->name('products.activateSingle');
+
+        // Resource controllers (kept after custom routes)
+        Route::resource('products', AdminProductController::class);
+        Route::resource('categories', CategoryController::class);
+
         // Route Manajemen Order Admin
         Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');

@@ -4,10 +4,34 @@
 
     <div class="p-6 pt-32">
 
+      <!-- ====== TOMBOL AKTIF/NONAKTIF ALL (DITAMBAHKAN DI SINI) ====== -->
+      <div class="mb-6 flex gap-3">
+        <!-- Tombol Aktifkan Semua Produk (kecuali stok 0) -->
+        <button
+          @click="activateAll"
+          :disabled="loading"
+          class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:opacity-60"
+        >
+          <span v-if="!loading">Aktifkan Semua Produk (kecuali stok 0)</span>
+          <span v-else>Memproses...</span>
+        </button>
+
+        <!-- Tombol Nonaktifkan Semua Produk -->
+        <button
+          @click="deactivateAll"
+          :disabled="loading"
+          class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition disabled:opacity-60"
+        >
+          <span v-if="!loading">Nonaktifkan Semua Produk</span>
+          <span v-else>Memproses...</span>
+        </button>
+      </div>
+      <!-- ============================================================ -->
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        
         <div class="bg-white rounded-xl shadow p-4 flex items-center">
           <div class="bg-yellow-100 p-3 rounded-full mr-4">
+            <!-- icon -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -144,7 +168,12 @@
 
 <script setup>
 import Navbar from "@/Components/NavbarAdmin.vue";
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
+import { usePage } from '@inertiajs/inertia-vue3';
+
+// akses props inertia global (mis. csrf token)
+const page = usePage();
 
 // MENERIMA DATA DARI CONTROLLER
 const props = defineProps({
@@ -153,4 +182,49 @@ const props = defineProps({
     reviews: Array,         // Daftar 5 ulasan terbaru
     bestSellers: Array      // Daftar 5 produk terlaris
 });
+
+// extract values to local refs so template binding is simple
+const stats = props.stats ?? {};
+const pendingOrders = props.pendingOrders ?? [];
+const reviews = props.reviews ?? [];
+const bestSellers = props.bestSellers ?? [];
+
+const loading = ref(false);
+
+function activateAll() {
+  if (!confirm('Yakin mengaktifkan semua produk (kecuali stok 0)?')) return;
+  loading.value = true;
+
+  Inertia.post('/admin/products/activate-all', {}, {
+    onSuccess: () => {
+      loading.value = false;
+      // reload page to reflect changes (or you can update local data)
+      Inertia.reload();
+      alert('Produk berhasil diaktifkan (stok > 0).');
+    },
+    onError: (errors) => {
+      loading.value = false;
+      console.error(errors);
+      alert('Gagal mengaktifkan produk. Cek console untuk detail.');
+    }
+  });
+}
+
+function deactivateAll() {
+  if (!confirm('Yakin menonaktifkan semua produk?')) return;
+  loading.value = true;
+
+  Inertia.post('/admin/products/deactivate-all', {}, {
+    onSuccess: () => {
+      loading.value = false;
+      Inertia.reload();
+      alert('Produk berhasil dinonaktifkan.');
+    },
+    onError: (errors) => {
+      loading.value = false;
+      console.error(errors);
+      alert('Gagal menonaktifkan produk. Cek console untuk detail.');
+    }
+  });
+}
 </script>
