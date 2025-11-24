@@ -1,269 +1,156 @@
 <template>
   <div class="min-h-screen bg-amber-50">
-    <!-- Navbar -->
     <Navbar />
 
-    <!-- Main Content -->
     <div class="p-6 pt-32">
 
-      <!-- Performance Cards (3 Kolom) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <!-- Income This Month -->
+        
         <div class="bg-white rounded-xl shadow p-4 flex items-center">
           <div class="bg-yellow-100 p-3 rounded-full mr-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
-            <p class="text-xs text-gray-500">Income This Month</p>
-            <p class="text-xl font-bold text-gray-800">Rp 4.000.000</p>
+            <p class="text-xs text-gray-500 font-semibold uppercase">Pendapatan Bulan Ini</p>
+            <p class="text-xl font-bold text-gray-800">{{ stats.incomeThisMonth }}</p>
           </div>
         </div>
 
-        <!-- Shipment This Month -->
         <div class="bg-white rounded-xl shadow p-4 flex items-center">
           <div class="bg-pink-100 p-3 rounded-full mr-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17l6-6 6 6M2 12h20" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
           <div>
-            <p class="text-xs text-gray-500">Shipment This Month</p>
-            <p class="text-xl font-bold text-gray-800">100 pcs</p>
+            <p class="text-xs text-gray-500 font-semibold uppercase">Item Terjual</p>
+            <p class="text-xl font-bold text-gray-800">{{ stats.shipmentThisMonth }}</p>
           </div>
         </div>
 
-        <!-- Shipment Pending -->
         <div class="bg-white rounded-xl shadow p-4 flex items-center">
-          <div class="bg-yellow-100 p-3 rounded-full mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div class="bg-blue-100 p-3 rounded-full mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
-            <p class="text-xs text-gray-500">Shipment Pending</p>
-            <p class="text-xl font-bold text-gray-800">50</p>
+            <p class="text-xs text-gray-500 font-semibold uppercase">Perlu Dikirim</p>
+            <p class="text-xl font-bold text-gray-800">{{ stats.shipmentPending }} Pesanan</p>
           </div>
         </div>
       </div>
 
-      <!-- Dua Kolom: Pending Orders & Rating & Review -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
-        <!-- Kolom Kiri: Pending Orders Table -->
         <div class="bg-white rounded-xl shadow p-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-4">Pending Orders (5)</h2>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800">Pesanan Masuk ({{ pendingOrders.length }})</h2>
+            <a href="/admin/orders" class="text-sm text-pink-600 hover:underline">Lihat Semua</a>
+          </div>
+          
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ORDER ID</th>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CUSTOMER</th>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DATE</th>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AMOUNT</th>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">STATUS</th>
+                  <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Invoice</th>
+                  <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Pelanggan</th>
+                  <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Total</th>
+                  <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Status</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="order in pendingOrders" :key="order.id" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{{ order.id }}</td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ order.customer }}</td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ order.date }}</td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ order.amount }}</td>
-                  <td class="px-4 py-3 whitespace-nowrap text-sm">
-                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                <tr v-for="order in pendingOrders" :key="order.id" class="hover:bg-gray-50 transition">
+                  <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ order.id }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ order.customer }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600 font-bold">{{ order.amount }}</td>
+                  <td class="px-4 py-3 text-sm">
+                    <span class="px-2 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-700">
                       {{ order.status }}
                     </span>
                   </td>
+                </tr>
+                
+                <tr v-if="pendingOrders.length === 0">
+                    <td colspan="4" class="px-4 py-8 text-center text-gray-400 italic">
+                        Belum ada pesanan baru yang masuk.
+                    </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Kolom Kanan: Rating & Review -->
         <div class="bg-white rounded-xl shadow p-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800">Rating & Review</h2>
-            <button class="text-gray-400 hover:text-gray-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0 2a2 2 0 100-4m-6 6h12" />
-              </svg>
-            </button>
+            <h2 class="text-lg font-bold text-gray-800">Ulasan Terbaru</h2>
           </div>
-          <div class="space-y-3">
-            <div v-for="(review, index) in reviews" :key="index" class="flex items-start gap-3">
-              <img :src="review.image" :alt="Product" class="w-12 h-12 object-cover rounded-md" />
+          
+          <div class="space-y-4">
+            <div v-for="(review, index) in reviews" :key="index" class="flex gap-3 border-b pb-3 last:border-0">
+              <img :src="review.image || 'https://via.placeholder.com/60'" class="w-10 h-10 object-cover rounded-full shadow-sm" alt="Produk" />
               <div class="flex-1">
-                <div class="flex items-center mb-1">
-                  <span class="text-yellow-500">★</span>
-                  <span class="text-yellow-500">★</span>
-                  <span class="text-yellow-500">★</span>
-                  <span class="text-yellow-500">★</span>
-                  <span class="text-yellow-500">★</span>
-                  <span class="ml-2 text-xs text-gray-600">({{ review.rating }})</span>
+                <div class="flex justify-between">
+                    <h4 class="text-sm font-bold text-gray-800">{{ review.product_name }}</h4>
+                    <span class="text-xs text-gray-400">{{ review.user_name }}</span>
                 </div>
-                <p class="text-sm text-gray-700">{{ review.comment }}</p>
+                <div class="flex items-center my-1">
+                  <span v-for="n in 5" :key="n" :class="n <= review.rating ? 'text-yellow-400' : 'text-gray-300'">★</span>
+                </div>
+                <p class="text-sm text-gray-600 line-clamp-2">"{{ review.comment }}"</p>
               </div>
             </div>
+
+            <div v-if="reviews.length === 0" class="text-center py-8 text-gray-400 italic">
+                Belum ada ulasan dari pelanggan.
+            </div>
           </div>
-          <button class="mt-4 w-full py-2 bg-gray-100 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-200 transition">
-            View All Messages
-          </button>
         </div>
       </div>
 
-      <!-- Best Seller -->
       <div class="mb-6">
-        <h2 class="text-xl font-bold text-blue-600 mb-4">Best Seller</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Produk Terlaris Bulan Ini</h2>
+        
         <div class="flex space-x-4 overflow-x-auto pb-4">
-          <div v-for="item in bestSellers" :key="item.name" class="bg-white rounded-xl shadow p-4 min-w-[200px] max-w-[220px]">
+          <div v-for="item in bestSellers" :key="item.id" class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 min-w-[220px] max-w-[220px] flex-shrink-0 border border-gray-100">
             <div class="relative">
-              <img :src="item.image" :alt="item.name" class="w-full h-32 object-cover rounded-md" />
-              <button class="absolute top-2 right-2 bg-red-100 text-red-600 p-1 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </button>
+              <img :src="item.image" :alt="item.name" class="w-full h-32 object-cover rounded-lg mb-3" />
+              <div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold text-pink-600 shadow-sm">
+                  {{ item.total_sold }} Terjual
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mt-3">{{ item.name }}</h3>
-            <div class="flex items-center mt-1">
-              <span class="text-yellow-500">★</span>
-              <span class="text-yellow-500">★</span>
-              <span class="text-yellow-500">★</span>
-              <span class="text-yellow-500">★</span>
-              <span class="text-yellow-500">★</span>
-              <span class="ml-1 text-xs text-gray-600">({{ item.rating }})</span>
+            
+            <h3 class="font-bold text-gray-800 truncate" :title="item.name">{{ item.name }}</h3>
+            <p class="text-pink-600 font-bold mt-1">{{ item.price }}</p>
+            
+            <div class="mt-3 flex justify-between items-center">
+              <span :class="['px-2 py-1 text-xs font-bold rounded', item.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700']">
+                {{ item.available ? 'Stok Ada' : 'Habis' }}
+              </span>
             </div>
-            <p class="text-pink-600 font-semibold mt-2">{{ item.price }}</p>
-            <div class="mt-3 flex justify-between">
-              <button 
-                :class="[
-                  'px-2 py-1 text-xs rounded-lg',
-                  item.available ? 'bg-gray-200 text-gray-800' : 'bg-gray-400 text-gray-100 cursor-not-allowed'
-                ]"
-              >
-                {{ item.available ? 'Habis' : 'Habis' }}
-              </button>
-              <button 
-                class="px-2 py-1 bg-pink-600 text-white text-xs rounded-lg hover:bg-pink-700"
-              >
-                Detail
-              </button>
-            </div>
+          </div>
+
+          <div v-if="bestSellers.length === 0" class="w-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300 text-gray-400">
+             Belum ada data penjualan yang cukup untuk menentukan Best Seller.
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
 import Navbar from "@/Components/NavbarAdmin.vue";
-import { router } from '@inertiajs/vue3';
+import { defineProps } from 'vue';
 
-const logout = () => {
-    router.post(route('logout'));
-};
-
-// Dummy data untuk pending orders
-const pendingOrders = [
-    {
-        id: 'ORD-001',
-        customer: 'Zaskia Nginx',
-        date: '2025-11-18',
-        amount: 'Rp 245.000',
-        status: 'Pending'
-    },
-    {
-        id: 'ORD-002',
-        customer: 'Ani Wijaya',
-        date: '2025-11-17',
-        amount: 'Rp 189.500',
-        status: 'Pending'
-    },
-    {
-        id: 'ORD-003',
-        customer: 'Rina Putri',
-        date: '2025-11-16',
-        amount: 'Rp 320.000',
-        status: 'Pending'
-    },
-    {
-        id: 'ORD-004',
-        customer: 'Dedi Pratama',
-        date: '2025-11-15',
-        amount: 'Rp 150.750',
-        status: 'Pending'
-    },
-    {
-        id: 'ORD-005',
-        customer: 'Siti Nurhaliza',
-        date: '2025-11-14',
-        amount: 'Rp 425.000',
-        status: 'Pending'
-    }
-];
-
-// Dummy data untuk rating & review
-const reviews = [
-  {
-    image: "https://placehold.co/100x100/png?text=burger",
-    rating: 5,
-    comment: "Rotinya enak banget!"
-  },
-  {
-    image: "https://placehold.co/100x100/png?text=tiramisu",
-    rating: 5,
-    comment: "Pelayanan cepat dan ramah."
-  },
-  {
-    image: "https://placehold.co/100x100/png?text=burger",
-    rating: 5,
-    comment: "Harga agak mahal tapi rasa oke."
-  },
-  {
-    image: "https://placehold.co/100x100/png?text=tiramisu",
-    rating: 5,
-    comment: "Roti cokelat favorit saya!"
-  },
-  {
-    image: "https://placehold.co/100x100/png?text=burger",
-    rating: 5,
-    comment: "Suka sama roti keju disini."
-  }
-];
-
-// Dummy data untuk best seller
-const bestSellers = [
-  {
-    name: "Chicken Burger",
-    price: "Rp 20.5k",
-    rating: 5,
-    available: true,
-    image: "https://placehold.co/200x200/png?text=burger"
-  },
-  {
-    name: "Tiramisu",
-    price: "Rp 15k",
-    rating: 5,
-    available: true,
-    image: "https://placehold.co/200x200/png?text=tiramisu"
-  },
-  {
-    name: "Chicken Burger",
-    price: "Rp 12.5k",
-    rating: 5,
-    available: true,
-    image: "https://placehold.co/200x200/png?text=burger"
-  },
-  {
-    name: "Tiramisu",
-    price: "Rp 10k",
-    rating: 5,
-    available: true,
-    image: "https://placehold.co/200x200/png?text=tiramisu"
-  }
-];
+// MENERIMA DATA DARI CONTROLLER
+const props = defineProps({
+    stats: Object,          // Income, Shipment, Pending Count
+    pendingOrders: Array,   // Daftar 5 order pending terbaru
+    reviews: Array,         // Daftar 5 ulasan terbaru
+    bestSellers: Array      // Daftar 5 produk terlaris
+});
 </script>

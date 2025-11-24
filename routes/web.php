@@ -4,20 +4,18 @@ use App\Models\Category;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\GoogleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 // 🌐 Halaman Awal
 Route::get('/', function () {
-    $categories = Category::all(); // ambil semua kategori dari database
-
+    $categories = Category::all();
     return Inertia::render('LandingPage', [
         'categories' => $categories,
         'canLogin' => Route::has('login'),
@@ -28,25 +26,24 @@ Route::get('/', function () {
 });
 
 /**
- * socialite auth
+ * Socialite Auth
  */
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+
 // 🌾 Produk Publik
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
-// 📦 Riwayat pesanan (tanpa login)
+// 📦 Riwayat Pesanan
 Route::get('/history', [OrderController::class, 'history'])->name('orders.history');
-// 📄 Detail pesanan untuk guest (berdasarkan invoice number)
 Route::get('/history/{invoice}', [OrderController::class, 'guestShow'])->name('history.show');
-
 
 Route::get('/detail', function () {
     return Inertia::render('DetailTransaksi');
 })->name('detail');
 
-// 🛒 Keranjang (guest & user)
+// 🛒 Keranjang
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
@@ -54,35 +51,37 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('car
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
 // 🧾 Checkout
-// 🧾 Checkout
 Route::get('/checkout', [OrderController::class, 'create'])->name('checkout');
 Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/success', [OrderController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/{invoice}', [OrderController::class, 'show'])->name('checkout.show');
 
-// 🧍‍♀️ User Login
+// 🧍‍♀️ User Login (Customer Dashboard)
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 });
 
+// 👮‍♂️ ADMIN PANEL
 Route::middleware(['auth', 'verified', 'isAdmin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', fn() => Inertia::render('Admin/Dashboard'))->name('dashboard');
+        
+        // 👇 ROUTE DASHBOARD (Sekarang bersih, pakai Controller) 👇
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
         Route::resource('/products', AdminProductController::class);
         Route::resource('/categories', CategoryController::class);
         
-        // Tambahkan ini di sini ✅
+        // Route Manajemen Order Admin
         Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
         Route::put('/orders/{id}', [OrderController::class, 'adminUpdate'])->name('orders.update');
 
+        // Route Profile Admin
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
-
-
 
 require __DIR__ . '/auth.php';

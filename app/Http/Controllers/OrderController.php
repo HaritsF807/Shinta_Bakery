@@ -166,9 +166,9 @@ class OrderController extends Controller
     }
 
     // 🔄 Update status pesanan oleh admin
+    // 🔄 Update status pesanan oleh admin
     public function adminUpdate(Request $request, $id)
     {
-        // Validasi input status
         $validated = $request->validate([
             'status' => 'required|string|in:pending,processing,shipped,completed,cancelled',
             'payment_status' => 'required|string|in:unpaid,paid,failed'
@@ -176,14 +176,16 @@ class OrderController extends Controller
 
         $order = Order::findOrFail($id);
         
+        // 1. Update Status Induk (Order)
         $order->update([
             'status' => $validated['status'],
             'payment_status' => $validated['payment_status']
         ]);
 
-        
-        // ✅ KODE BARU (Gunakan ini):
-        // Arahkan kembali ke halaman detail admin untuk order yang sama
+        // ✅ TAMBAHAN: Update juga status anak-anaknya (Order Items)
+        // Supaya di database tabel order_items juga berubah jadi 'completed'
+        $order->items()->update(['status' => $validated['status']]);
+
         return redirect()
             ->route('admin.orders.show', $order->id) 
             ->with('success', 'Status pesanan berhasil diperbarui!');
