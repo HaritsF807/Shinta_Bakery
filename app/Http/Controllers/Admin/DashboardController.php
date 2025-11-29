@@ -66,9 +66,10 @@ class DashboardController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'price' => 'Rp ' . number_format($product->price, 0, ',', '.'),
-                    'rating' => 5, // Placeholder
-                    'available' => $product->stock > 0,
-                    'image' => $product->image_url ?? 'https://placehold.co/200x200/png?text=Produk',
+                    'stock' => $product->stock,
+                    'status' => $product->status, // aktif atau nonaktif
+                    'available' => $product->stock > 0 && $product->status === 'aktif',
+                    'image' => $product->image ? "/storage/{$product->image}" : 'https://placehold.co/200x200/png?text=Produk',
                     'total_sold' => $item->total_sold
                 ];
             })->filter()->values();

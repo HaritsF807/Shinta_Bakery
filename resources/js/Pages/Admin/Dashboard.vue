@@ -163,8 +163,17 @@
             <p class="text-pink-600 font-bold mt-1">{{ item.price }}</p>
             
             <div class="mt-3 flex justify-between items-center">
-              <span :class="['px-2 py-1 text-xs font-bold rounded', item.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700']">
-                {{ item.available ? 'Stok Ada' : 'Habis' }}
+              <span 
+                v-if="item.available"
+                class="px-2 py-1 text-xs font-bold rounded bg-green-100 text-green-700"
+              >
+                Stok Ada
+              </span>
+              <span 
+                v-else
+                class="px-2 py-1 text-xs font-bold rounded bg-gray-200 text-gray-600"
+              >
+                {{ item.stock <= 0 ? 'Stok Habis' : 'Tidak Tersedia' }}
               </span>
             </div>
           </div>
