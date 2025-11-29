@@ -21,7 +21,7 @@
       <div class="flex items-center gap-4 relative right-24">
         <!-- Print/Download PDF Icon -->
         <a 
-          href="/katalog/katalog_shinta.pdf"
+          :href="catalogUrl"
           download
           class="print-icon text-white hover:text-pink-200 transition-all duration-300"
           title="Download Catalog PDF"
@@ -50,10 +50,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import SidebarKeranjang from '@/Components/SidebarKeranjang.vue'
 
 const isSidebarOpen = ref(false)
+const catalogUrl = ref('/katalog/katalog_shinta.pdf'); // Default fallback
 
 const cartItems = ref([
   { name: 'Roti Coklat', price: 15000, quantity: 1 },
@@ -63,6 +65,17 @@ const cartItems = ref([
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
 }
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('/api/catalog-path');
+    if (response.data.success && response.data.url) {
+      catalogUrl.value = response.data.url;
+    }
+  } catch (error) {
+    console.error('Failed to fetch catalog path:', error);
+  }
+});
 </script>
 
 <style scoped>
@@ -106,3 +119,4 @@ header {
   filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
 }
 </style>
+

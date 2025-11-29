@@ -103,6 +103,7 @@ class DashboardController extends Controller
             'pendingOrders' => $pendingOrders,
             'reviews' => $reviews,
             'bestSellers' => $bestSellers,
+            'catalogInfo' => app(\App\Http\Controllers\CatalogController::class)->getInfo(),
         ]);
     }
 }

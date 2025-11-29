@@ -46,7 +46,7 @@
 
       <!-- Quick Actions Card -->
       <div class="bg-white rounded-xl shadow p-6 mb-6">
-        <h2 class="text-lg font-bold text-gray-800 mb-4">⚡ Quick Actions</h2>
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Quick Actions</h2>
         <div class="flex flex-wrap gap-3">
           <!-- Tombol Aktifkan Semua Produk -->
           <button
@@ -75,7 +75,70 @@
           </button>
         </div>
         <p class="text-sm text-gray-500 mt-3">
-          💡 <span class="font-medium">Tip:</span> Tombol "Aktifkan" hanya akan mengaktifkan produk dengan stok > 0
+          <span class="font-medium">Tip:</span> Tombol "Aktifkan" hanya akan mengaktifkan produk dengan stok > 0
+        </p>
+      </div>
+
+      <!-- Catalog Management Card -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Manajemen Katalog PDF</h2>
+        
+        <!-- Current Catalog Info -->
+        <div v-if="catalogInfo.exists" class="bg-gray-50 rounded-lg p-4 mb-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold text-gray-700">File Saat Ini:</p>
+              <p class="text-lg font-bold text-gray-900">{{ catalogInfo.name }}</p>
+              <p class="text-xs text-gray-500 mt-1">
+                Ukuran: {{ catalogInfo.size_formatted }} • Diupload: {{ catalogInfo.updated_at }}
+              </p>
+            </div>
+            <div class="text-green-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div v-else class="bg-yellow-50 rounded-lg p-4 mb-4 border border-yellow-200">
+          <p class="text-sm text-yellow-800">Belum ada katalog PDF yang diupload</p>
+        </div>
+
+        <!-- Upload Form -->
+        <form @submit.prevent="uploadCatalog" class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Upload Katalog Baru (Max 50MB)</label>
+            <input 
+              type="file" 
+              ref="catalogFile"
+              accept=".pdf"
+              @change="handleFileSelect"
+              class="block w-full text-sm text-gray-500 
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-lg file:border-0
+                file:text-sm file:font-semibold
+                file:bg-pink-50 file:text-pink-700
+                hover:file:bg-pink-100
+                cursor-pointer"
+            />
+            <p v-if="selectedFileName" class="text-sm text-gray-600 mt-1"> {{ selectedFileName }}</p>
+          </div>
+          
+          <button 
+            type="submit"
+            :disabled="!selectedFileName || uploadingCatalog"
+            class="flex items-center gap-2 px-4 py-2 bg-pink-600 text-white font-semibold rounded-lg shadow hover:bg-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span v-if="!uploadingCatalog">Upload Katalog</span>
+            <span v-else>Mengupload...</span>
+          </button>
+        </form>
+
+        <p class="text-xs text-gray-500 mt-3">
+          <span class="font-medium">Info:</span> File lama akan otomatis terhapus saat upload katalog baru
         </p>
       </div>
 
@@ -202,7 +265,8 @@ const props = defineProps({
     stats: Object,          // Income, Shipment, Pending Count
     pendingOrders: Array,   // Daftar 5 order pending terbaru
     reviews: Array,         // Daftar 5 ulasan terbaru
-    bestSellers: Array      // Daftar 5 produk terlaris
+    bestSellers: Array,     // Daftar 5 produk terlaris
+    catalogInfo: Object     // Info katalog saat ini
 });
 
 // extract values to local refs so template binding is simple
@@ -210,8 +274,62 @@ const stats = props.stats ?? {};
 const pendingOrders = props.pendingOrders ?? [];
 const reviews = props.reviews ?? [];
 const bestSellers = props.bestSellers ?? [];
+const catalogInfo = props.catalogInfo ?? { exists: false };
 
 const loading = ref(false);
+const uploadingCatalog = ref(false);
+const selectedFileName = ref('');
+const catalogFile = ref(null);
+
+// Handle file selection
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (file) {
+    selectedFileName.value = file.name;
+  } else {
+    selectedFileName.value = '';
+  }
+}
+
+// Upload catalog
+function uploadCatalog() {
+  if (!catalogFile.value || !catalogFile.value.files[0]) {
+    alert('Pilih file PDF terlebih dahulu');
+    return;
+  }
+
+  const file = catalogFile.value.files[0];
+  
+  // Validate file size (50MB)
+  const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+  if (file.size > maxSize) {
+    alert('File terlalu besar! Maksimal 50MB');
+    return;
+  }
+
+  if (!confirm('Yakin upload katalog baru? File lama akan terhapus.')) return;
+
+  uploadingCatalog.value = true;
+
+  const formData = new FormData();
+  formData.append('catalog', file);
+
+  Inertia.post('/admin/catalog/upload', formData, {
+    preserveScroll: true,
+    onSuccess: () => {
+      uploadingCatalog.value = false;
+      selectedFileName.value = '';
+      catalogFile.value.value = ''; // Reset file input
+      Inertia.reload();
+      alert('Katalog berhasil diupload!');
+    },
+    onError: (errors) => {
+      uploadingCatalog.value = false;
+      console.error(errors);
+      alert('Gagal upload katalog. Pastikan file adalah PDF dan ukuran < 50MB');
+    }
+  });
+}
 
 function activateAll() {
   if (!confirm('Yakin mengaktifkan semua produk (kecuali stok 0)?')) return;

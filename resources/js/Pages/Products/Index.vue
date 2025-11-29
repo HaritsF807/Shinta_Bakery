@@ -27,7 +27,7 @@ watch(selectedCategory, (newCategory) => {
 // 🎨 Format kategori untuk dropdown
 const categoryOptions = computed(() => {
   const options = [
-    { value: "", label: "✨ Semua Kategori" }
+    { value: "", label: "Semua Kategori" }
   ];
   
   props.categories.forEach(cat => {
@@ -78,7 +78,7 @@ console.log("Produk dari Laravel:", props.products);
         <CustomDropdown
           v-model="selectedCategory"
           :options="categoryOptions"
-          placeholder="✨ Semua Kategori"
+          placeholder="Semua Kategori"
         />
       </div>
 

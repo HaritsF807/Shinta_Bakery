@@ -51,6 +51,9 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('car
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/validate-stock', [CartController::class, 'validateStock'])->name('cart.validate-stock');
 
+// 📄 Katalog
+Route::get('/api/catalog-path', [App\Http\Controllers\CatalogController::class, 'getCatalogPath'])->name('catalog.path');
+
 // 🧾 Checkout
 Route::get('/checkout', [OrderController::class, 'create'])->name('checkout');
 Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
@@ -96,6 +99,9 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
 
         // Route Manajemen Testimonials Admin
         Route::get('/testimonials', [App\Http\Controllers\TestimonialController::class, 'adminIndex'])->name('testimonials.index');
+
+        // Route Manajemen Katalog Admin
+        Route::post('/catalog/upload', [App\Http\Controllers\CatalogController::class, 'upload'])->name('catalog.upload');
 
         // Route Profile Admin
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
