@@ -1,5 +1,6 @@
 <script setup>
 import Navbar from "@/Components/Navbar.vue";
+import CustomDropdown from "@/Components/CustomDropdown.vue";
 import { ref, computed, watch } from "vue";
 import { router } from "@inertiajs/vue3"; // ⚡ untuk kirim query ke backend
 
@@ -21,6 +22,22 @@ watch(selectedCategory, (newCategory) => {
     { category: newCategory || null }, // kirim query ?category=id
     { preserveState: true, replace: true } // biar gak reload full
   );
+});
+
+// 🎨 Format kategori untuk dropdown
+const categoryOptions = computed(() => {
+  const options = [
+    { value: "", label: "✨ Semua Kategori" }
+  ];
+  
+  props.categories.forEach(cat => {
+    options.push({
+      value: cat.id,
+      label: cat.name
+    });
+  });
+  
+  return options;
 });
 
 // 🔍 Filter produk di sisi frontend berdasarkan pencarian
@@ -48,39 +65,32 @@ console.log("Produk dari Laravel:", props.products);
 
 <template>
   <Navbar />
-  <div class="bg-amber-50 min-h-screen py-16">
+  <div class="bg-amber-50 min-h-screen pt-24 pb-16">
     <!-- Header -->
-    <div class="text-center py-8">
-      <h1 class="text-3xl font-bold text-pink-700">Our Menu</h1>
+    <div class="text-center py-16">
+      <h1 class="text-4xl font-bold text-pink-700 tracking-tight">Our Menu</h1>
     </div>
 
     <!-- 🔽 Filter kategori + 🔍 Search bar -->
     <div class="max-w-4xl mx-4 flex flex-col sm:flex-row gap-4 px-8 mb-8">
-      <!-- Dropdown kategori -->
-      <select
-        v-model="selectedCategory"
-        class="w-full sm:w-1/3 px-4 py-2 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-pink-300"
-      >
-        <option value="">Semua Kategori</option>
-        <option
-          v-for="cat in props.categories"
-          :key="cat.id"
-          :value="cat.id"
-        >
-          {{ cat.name }}
-        </option>
-      </select>
+      <!-- Dropdown kategori dengan animasi keren 🎨 -->
+      <div class="w-full sm:w-1/3">
+        <CustomDropdown
+          v-model="selectedCategory"
+          :options="categoryOptions"
+          placeholder="✨ Semua Kategori"
+        />
+      </div>
 
-      <!-- Input pencarian -->
       <div class="relative flex-1">
         <input
           type="text"
           v-model="searchQuery"
           placeholder="Cari produk..."
-          class="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-300"
+          class="search-input w-full px-4 py-3 pl-12 rounded-full border-2 border-pink-200 focus:outline-none focus:border-pink-400 transition-all duration-300"
         />
         <svg
-          class="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
+          class="search-icon absolute left-4 top-3.5 h-5 w-5 text-pink-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -102,7 +112,11 @@ console.log("Produk dari Laravel:", props.products);
         <div
           v-for="p in filteredProducts"
           :key="p.id"
-          class="bg-white rounded-2xl shadow-lg overflow-hidden relative transition-transform hover:scale-[1.02]"
+          class="bg-white rounded-2xl shadow-lg overflow-hidden relative transition-transform"
+          :class="{
+            'hover:scale-[1.02]': p.stock > 0 && p.status === 'aktif',
+            'opacity-60 grayscale': p.stock <= 0 || p.status !== 'aktif'
+          }"
         >
           <!-- Gambar produk -->
           <div class="relative">
@@ -112,11 +126,16 @@ console.log("Produk dari Laravel:", props.products);
               alt="produk"
               class="w-full h-48 object-cover"
             />
-            <button
-              class="absolute top-3 right-3 bg-white/80 backdrop-blur-sm rounded-full p-1 hover:bg-pink-100 transition"
-            >
             
-            </button>
+            <!-- Badge "Habis" atau "Nonaktif" -->
+            <div 
+              v-if="p.stock <= 0 || p.status !== 'aktif'"
+              class="absolute inset-0 bg-black/40 flex items-center justify-center"
+            >
+              <span class="bg-red-500 text-white px-4 py-2 rounded-full font-bold text-sm">
+                {{ p.stock <= 0 ? 'STOK HABIS' : 'TIDAK TERSEDIA' }}
+              </span>
+            </div>
           </div>
 
           <!-- Isi -->
@@ -149,9 +168,9 @@ console.log("Produk dari Laravel:", props.products);
               <button
                 v-else
                 disabled
-                class="text-sm bg-gray-300 text-white px-3 py-1 rounded-lg cursor-not-allowed"
+                class="text-sm bg-gray-300 text-gray-500 px-3 py-1 rounded-lg cursor-not-allowed"
               >
-                Habis
+                Detail
               </button>
             </div>
           </div>
@@ -173,3 +192,79 @@ console.log("Produk dari Laravel:", props.products);
     <p>© 2025 Shinta Bakery. All rights reserved.</p>
   </footer>
 </template>
+
+<style scoped>
+.search-input {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(254, 243, 249, 0.85) 100%);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 4px 6px rgba(236, 72, 153, 0.12),
+    0 2px 4px rgba(236, 72, 153, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  color: #831843;
+  position: relative;
+}
+
+.search-input::placeholder {
+  color: #f9a8d4;
+  font-weight: 500;
+}
+
+.search-input:hover {
+  background: linear-gradient(135deg, rgba(254, 243, 249, 0.95) 0%, rgba(252, 231, 243, 0.9) 100%);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 8px 16px rgba(236, 72, 153, 0.2),
+    0 4px 8px rgba(236, 72, 153, 0.15),
+    0 0 20px rgba(236, 72, 153, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 0 0 4px rgba(236, 72, 153, 0.15), 
+    0 8px 20px rgba(236, 72, 153, 0.2),
+    0 4px 8px rgba(236, 72, 153, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.search-icon {
+  transition: all 0.3s ease;
+}
+
+.search-input:focus + .search-icon {
+  color: #ec4899;
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 4px rgba(236, 72, 153, 0.4));
+}
+
+.search-input:hover + .search-icon {
+  animation: pulse-icon 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+</style>

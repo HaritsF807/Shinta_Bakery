@@ -32,7 +32,7 @@
           <img
             src="/images/LandingPage/hero asset.png"
             alt="Cakes"
-            class="w-240 md:w-[720px] relative top-32 left-12"
+            class="hero-image w-240 md:w-[720px] relative top-32 left-12"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@
           <img
             src="/images/LandingPage/group 19.png"
             alt="Bakery items"
-            class="w-96 md:w-[480px]"
+            class="food-image w-96 md:w-[480px]"
           />
         </div>
       </div>
@@ -157,7 +157,44 @@ const toggleCart = () => (cartOpen.value = !cartOpen.value)
   background-position: center;
 }
 
-/* 🩷 Floating animation for hero image */
+/* 🍰 Hero Cake Image Effects */
+.hero-image {
+  animation: gentle-float 5s ease-in-out infinite;
+  filter: drop-shadow(0 10px 30px rgba(236, 72, 153, 0.2));
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-image:hover {
+  animation: none;
+  transform: translateY(-8px) scale(1.03);
+  filter: drop-shadow(0 15px 40px rgba(236, 72, 153, 0.35));
+}
+
+/* 🍱 Food Group Image Effects */
+.food-image {
+  animation: gentle-float 6s ease-in-out infinite;
+  animation-delay: 0.5s;
+  filter: drop-shadow(0 8px 25px rgba(236, 72, 153, 0.18));
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.food-image:hover {
+  animation: none;
+  transform: translateY(-6px) scale(1.02) rotate(1deg);
+  filter: drop-shadow(0 12px 35px rgba(236, 72, 153, 0.3));
+}
+
+/* ✨ Gentle Floating Animation */
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* Legacy float animation (dapat dihapus jika tidak digunakan) */
 @keyframes float {
   0%,
   100% {

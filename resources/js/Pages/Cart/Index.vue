@@ -90,24 +90,43 @@
           Kosongkan
         </button>
 
-        <a
-          href="/checkout"
+        <button
+          @click="checkStockBeforeCheckout"
           class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
         >
           Lanjut ke Checkout →
-        </a>
+        </button>
       </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      v-if="showToast"
+      class="fixed top-20 right-6 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 animate-slide-in z-50"
+    >
+      <span class="text-2xl">⚠️</span>
+      <div>
+        <p class="font-semibold">{{ toastMessage }}</p>
+        <p class="text-sm opacity-90">{{ toastDetail }}</p>
+      </div>
+      <button @click="showToast = false" class="ml-4 text-xl hover:text-gray-200">×</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { router } from '@inertiajs/vue3'
+import axios from 'axios'
 
 const props = defineProps({
   cart: Object
 })
+
+// Toast notification state
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastDetail = ref('')
 
 // Hapus item
 function removeItem(id) {
@@ -133,8 +152,52 @@ function clearCart() {
   }
 }
 
+// 🔍 Validasi stok sebelum checkout
+async function checkStockBeforeCheckout() {
+  try {
+    // Kirim request untuk cek stok
+    const response = await axios.post('/cart/validate-stock', {
+      cart: props.cart
+    })
+    
+    // Jika semua stok cukup, lanjut ke checkout
+    if (response.data.success) {
+      window.location.href = '/checkout'
+    }
+  } catch (error) {
+    // Jika stok tidak cukup, tampilkan toast
+    if (error.response && error.response.data) {
+      showToast.value = true
+      toastMessage.value = error.response.data.message || 'Stok tidak mencukupi!'
+      toastDetail.value = error.response.data.detail || ''
+      
+      // Auto hide toast setelah 5 detik
+      setTimeout(() => {
+        showToast.value = false
+      }, 5000)
+    }
+  }
+}
+
 // Total harga
 const totalHarga = computed(() =>
   Object.values(props.cart).reduce((sum, item) => sum + item.price * item.quantity, 0)
 )
 </script>
+
+<style scoped>
+@keyframes slide-in {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+</style>

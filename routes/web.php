@@ -49,6 +49,7 @@ Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update/{id}', [CartController::class, 'updateQuantity'])->name('cart.update');
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/validate-stock', [CartController::class, 'validateStock'])->name('cart.validate-stock');
 
 // 🧾 Checkout
 Route::get('/checkout', [OrderController::class, 'create'])->name('checkout');

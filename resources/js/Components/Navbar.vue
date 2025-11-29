@@ -14,28 +14,32 @@
         <strong><a href="/" class="hover:underline">Home</a></strong>
         <strong><a href="/products" class="hover:underline">Products</a></strong>
         <strong><a href="/history" class="hover:underline">History</a></strong>
-        <strong>
-          <a href="/#our-story" class="hover:underline" style="scroll-behavior: smooth;">
-            About Us
-          </a>
-        </strong>
-
-        <!-- ⭐ Download PDF -->
-        <strong>
-          <a 
-            href="/katalog/katalog_shinta.pdf"
-            download
-            class="bg-white text-pink-600 px-3 py-1 rounded-md hover:bg-pink-200 transition"
-          >
-            Download PDF
-          </a>
-        </strong>
 
       </nav>
 
-      <!-- Keranjang -->
-      <div class="flex items-center relative right-24">
-        <button class="ml-4 text-2xl hover:text-pink-200">
+      <!-- Icons: Print & Cart -->
+      <div class="flex items-center gap-4 relative right-24">
+        <!-- Print/Download PDF Icon -->
+        <a 
+          href="/katalog/katalog_shinta.pdf"
+          download
+          class="print-icon text-white hover:text-pink-200 transition-all duration-300"
+          title="Download Catalog PDF"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-9 w-9" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+        </a>
+
+        <!-- Cart Icon -->
+        <button class="text-2xl hover:text-pink-200">
           <a href="/cart">
             <img src="/images/LandingPage/Shopping cart.png" alt="Keranjang" class="relative left-16">
           </a>
@@ -89,5 +93,16 @@ header {
   background-color: #F93679;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   z-index: 50;
+}
+
+/* Print Icon Hover Effect */
+.print-icon {
+  display: inline-block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.print-icon:hover {
+  transform: translateY(-2px) scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
 }
 </style>

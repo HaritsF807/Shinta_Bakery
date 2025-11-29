@@ -17,6 +17,12 @@ class CartController extends Controller
 {
     $product = Product::findOrFail($id);
 
+    // ⚠️ Cek apakah produk aktif
+    if ($product->status !== 'aktif') {
+        return redirect()->back()
+            ->with('error', "Produk '{$product->name}' sedang tidak tersedia untuk pemesanan!");
+    }
+
     $cart = session()->get('cart', []);
 
     // ambil qty dari request, default 1
@@ -71,5 +77,57 @@ class CartController extends Controller
 
     return back()->with('error', "Produk tidak ditemukan di keranjang.");
 }
+
+    // 🔍 Validasi stok sebelum checkout
+    public function validateStock(Request $request)
+    {
+        $cart = $request->input('cart', []);
+        
+        foreach ($cart as $item) {
+            $product = Product::find($item['id']);
+            
+            // Cek apakah produk masih ada
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Produk tidak ditemukan!',
+                    'detail' => "Produk '{$item['name']}' sudah tidak tersedia."
+                ], 400);
+            }
+            
+            // ⚠️ CEK APAKAH PRODUK AKTIF
+            if ($product->status !== 'aktif') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Produk tidak aktif!',
+                    'detail' => "Produk '{$product->name}' sedang tidak tersedia untuk pemesanan."
+                ], 400);
+            }
+            
+            // Cek apakah stok habis
+            if ($product->stock == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok sudah habis!',
+                    'detail' => "Produk '{$product->name}' sudah habis stoknya."
+                ], 400);
+            }
+            
+            // Cek apakah stok cukup
+            if ($product->stock < $item['quantity']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok tidak mencukupi!',
+                    'detail' => "Produk '{$product->name}' hanya tersisa {$product->stock} unit, Anda meminta {$item['quantity']} unit."
+                ], 400);
+            }
+        }
+        
+        // Semua validasi lolos
+        return response()->json([
+            'success' => true,
+            'message' => 'Stok tersedia, lanjut ke checkout.'
+        ]);
+    }
     
 }
