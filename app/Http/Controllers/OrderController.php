@@ -64,8 +64,15 @@ class OrderController extends Controller
         $today = now()->format('Y-m-d');
         $orderCountToday = Order::whereDate('created_at', $today)->count() + 1;
 
-        // 🧾 Generate kode invoice, misal: INV-0211202501
-        $invoiceNumber = 'INV-' . now()->format('dmY') . str_pad($orderCountToday, 2, '0', STR_PAD_LEFT);
+        // 🧾 Generate kode invoice unik (Looping untuk menghindari duplikat saat race condition)
+        do {
+            $invoiceNumber = 'INV-' . now()->format('dmY') . str_pad($orderCountToday, 3, '0', STR_PAD_LEFT);
+            $exists = Order::where('invoice_number', $invoiceNumber)->exists();
+            
+            if ($exists) {
+                $orderCountToday++;
+            }
+        } while ($exists);
 
         // hitung total dengan fallback untuk 'qty'
         $totalPrice = collect($cart)->sum(function ($item) {
