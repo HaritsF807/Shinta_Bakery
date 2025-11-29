@@ -4,30 +4,7 @@
 
     <div class="p-6 pt-32">
 
-      <!-- ====== TOMBOL AKTIF/NONAKTIF ALL (DITAMBAHKAN DI SINI) ====== -->
-      <div class="mb-6 flex gap-3">
-        <!-- Tombol Aktifkan Semua Produk (kecuali stok 0) -->
-        <button
-          @click="activateAll"
-          :disabled="loading"
-          class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:opacity-60"
-        >
-          <span v-if="!loading">Aktifkan Semua Produk (kecuali stok 0)</span>
-          <span v-else>Memproses...</span>
-        </button>
-
-        <!-- Tombol Nonaktifkan Semua Produk -->
-        <button
-          @click="deactivateAll"
-          :disabled="loading"
-          class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition disabled:opacity-60"
-        >
-          <span v-if="!loading">Nonaktifkan Semua Produk</span>
-          <span v-else>Memproses...</span>
-        </button>
-      </div>
-      <!-- ============================================================ -->
-
+      <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-xl shadow p-4 flex items-center">
           <div class="bg-yellow-100 p-3 rounded-full mr-4">
@@ -65,6 +42,41 @@
             <p class="text-xl font-bold text-gray-800">{{ stats.shipmentPending }} Pesanan</p>
           </div>
         </div>
+      </div>
+
+      <!-- Quick Actions Card -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">⚡ Quick Actions</h2>
+        <div class="flex flex-wrap gap-3">
+          <!-- Tombol Aktifkan Semua Produk -->
+          <button
+            @click="activateAll"
+            :disabled="loading"
+            class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span v-if="!loading">Aktifkan Semua Produk</span>
+            <span v-else>Memproses...</span>
+          </button>
+
+          <!-- Tombol Nonaktifkan Semua Produk -->
+          <button
+            @click="deactivateAll"
+            :disabled="loading"
+            class="flex items-center gap-2 px-5 py-2.5 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <span v-if="!loading">Nonaktifkan Semua Produk</span>
+            <span v-else>Memproses...</span>
+          </button>
+        </div>
+        <p class="text-sm text-gray-500 mt-3">
+          💡 <span class="font-medium">Tip:</span> Tombol "Aktifkan" hanya akan mengaktifkan produk dengan stok > 0
+        </p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -110,6 +122,7 @@
         <div class="bg-white rounded-xl shadow p-6">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-bold text-gray-800">Ulasan Terbaru</h2>
+            <a href="/admin/testimonials" class="text-sm text-pink-600 hover:underline">Lihat Semua</a>
           </div>
           
           <div class="space-y-4">

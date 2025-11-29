@@ -61,6 +61,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 });
 
+// 🌟 Testimoni (Public - Guest bisa submit)
+Route::post('/testimonials', [App\Http\Controllers\TestimonialController::class, 'store'])->name('testimonials.store');
+
 // 👮‍♂️ ADMIN PANEL
 Route::middleware(['auth', 'verified', 'isAdmin'])
     ->prefix('admin')
@@ -89,6 +92,9 @@ Route::middleware(['auth', 'verified', 'isAdmin'])
         Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'adminShow'])->name('orders.show');
         Route::put('/orders/{id}', [OrderController::class, 'adminUpdate'])->name('orders.update');
+
+        // Route Manajemen Testimonials Admin
+        Route::get('/testimonials', [App\Http\Controllers\TestimonialController::class, 'adminIndex'])->name('testimonials.index');
 
         // Route Profile Admin
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -10,6 +10,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            // CategorySeeder::class, // Uncomment jika ada
+            // ProductSeeder::class,  // Uncomment jika ada
+            // OrderSeeder::class,    // Uncomment jika ada
+            TestimonialSeeder::class, // ⭐ Seeder untuk testimonials
         ]);
     }
 }

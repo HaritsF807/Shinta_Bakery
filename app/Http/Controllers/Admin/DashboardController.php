@@ -73,8 +73,24 @@ class DashboardController extends Controller
                 ];
             })->filter()->values();
 
-        // 6. Reviews (Kosongkan dulu)
-        $reviews = [];
+        // 6. Ambil 5 Testimoni Terbaru
+        $reviews = \App\Models\Testimonial::with(['order.items.product'])
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($testimonial) {
+                // Ambil produk pertama untuk gambar (atau bisa agregasi semua produk)
+                $firstProduct = $testimonial->order->items->first()?->product;
+                
+                return [
+                    'id' => $testimonial->id,
+                    'product_name' => $testimonial->order->items->pluck('product.name')->filter()->implode(', ') ?: 'Produk',
+                    'user_name' => $testimonial->customer_name,
+                    'rating' => $testimonial->rating,
+                    'comment' => $testimonial->comment ?? '',
+                    'image' => $firstProduct?->image_url ?? 'https://placehold.co/60x60/png?text=Produk',
+                ];
+            });
 
         // Kirim data ke Frontend (Inertia)
         return Inertia::render('Admin/Dashboard', [

@@ -129,12 +129,16 @@ class OrderController extends Controller
     // 📜 Detail pesanan untuk guest (tanpa login)
     public function guestShow($invoice)
     {
-        $order = Order::with(['items.product'])
+        $order = Order::with(['items.product', 'testimonial'])
             ->where('invoice_number', $invoice)
             ->firstOrFail();
 
+        // ✅ Logic popup: tampil hanya jika status = completed & belum ada testimonial
+        $canShowPopup = ($order->status === 'completed') && !$order->testimonial;
+
         return Inertia::render('DetailTransaksi', [
             'order' => $order,
+            'canShowPopup' => $canShowPopup,
         ]);
     }
 

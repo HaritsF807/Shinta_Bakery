@@ -58,14 +58,6 @@
               <tr v-for="(item, index) in order.items" :key="index">
                 <td>
                   <div class="item-name">{{ item.product?.name ?? 'Produk' }}</div>
-                  <button class="review-btn" @click="reviewItem(item)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2l3.09 6.26L22 9.27l-5 4.87-.69 6.9L12 19l-4.31 2.15-.69-6.9-5-4.87 6.91-1.01L12 2z"
-                      />
-                    </svg>
-                    Review
-                  </button>
                 </td>
                 <td>{{ item.quantity }}</td>
                 <td class="harga">Rp. {{ formatCurrency(item.price) }}</td>
@@ -106,15 +98,43 @@
         </button>
       </div>
     </div>
+
+    <!-- Rating Popup -->
+    <RatingPopup
+      :is-open="showRatingPopup"
+      :order-id="order.id"
+      :order-invoice="order.invoice_number"
+      @close="showRatingPopup = false"
+      @submitted="handleTestimonialSubmitted"
+    />
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, ref, onMounted } from 'vue'
+import RatingPopup from '@/Components/RatingPopup.vue'
 
 const props = defineProps({
-  order: Object
+  order: Object,
+  canShowPopup: Boolean,
 })
+
+const showRatingPopup = ref(false)
+
+// Auto-show popup setelah halaman dimuat jika eligible
+onMounted(() => {
+  if (props.canShowPopup) {
+    // Delay sedikit untuk smooth UX
+    setTimeout(() => {
+      showRatingPopup.value = true
+    }, 500)
+  }
+})
+
+const handleTestimonialSubmitted = () => {
+  // Bisa tambahkan logic lain seperti show thank you message
+  console.log('Testimonial submitted successfully!')
+}
 
 const formatCurrency = (value) => {
   if (!value) return '0'
@@ -141,10 +161,6 @@ const confirmInWhatsapp = () => {
   const message = `Halo, saya ingin konfirmasi pesanan ${props.order.invoice_number} dengan total Rp. ${formatCurrency(props.order.total_price)}.`
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
   window.open(whatsappUrl, '_blank')
-}
-
-const reviewItem = (item) => {
-  alert(`Review produk: ${item.product?.name ?? 'Produk'}`)
 }
 </script>
 
@@ -292,30 +308,6 @@ const reviewItem = (item) => {
 .item-name {
   font-weight: 600;
   margin-bottom: 5px;
-}
-
-.review-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background-color: #FFD740;
-  color: #333;
-  border: none;
-  border-radius: 15px;
-  padding: 3px 8px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.review-btn:hover {
-  background-color: #FFCA28;
-}
-
-.review-btn svg {
-  width: 12px;
-  height: 12px;
-  fill: #333;
 }
 
 .total-label {
@@ -533,7 +525,6 @@ const reviewItem = (item) => {
   /* Tombol tidak ikut tercetak */
   .print-btn,
   .whatsapp-btn,
-  .review-btn,
   .action-buttons {
     display: none !important;
   }

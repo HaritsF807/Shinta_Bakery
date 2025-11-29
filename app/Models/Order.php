@@ -36,4 +36,10 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    // ⭐ Relasi ke tabel testimonials
+    public function testimonial()
+    {
+        return $this->hasOne(Testimonial::class);
+    }
 }
