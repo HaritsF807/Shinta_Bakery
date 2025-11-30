@@ -18,12 +18,12 @@
       </nav>
 
       <!-- Icons: Print & Cart -->
-      <div class="flex items-center gap-4 relative right-24">
+      <div class="flex items-center gap-8">
         <!-- Print/Download PDF Icon -->
         <a 
           :href="catalogUrl"
           download
-          class="print-icon text-white hover:text-pink-200 transition-all duration-300"
+          class="nav-icon text-white hover:text-pink-200 transition-all duration-300"
           title="Download Catalog PDF"
         >
           <svg 
@@ -39,11 +39,22 @@
         </a>
 
         <!-- Cart Icon -->
-        <button class="text-2xl hover:text-pink-200">
-          <a href="/cart">
-            <img src="/images/LandingPage/Shopping cart.png" alt="Keranjang" class="relative left-16">
-          </a>
-        </button>
+        <a 
+          href="/cart" 
+          class="nav-icon text-white hover:text-pink-200 transition-all duration-300"
+          title="View Cart"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-9 w-9" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor" 
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </a>
       </div>
     </div>
   </header>
@@ -108,13 +119,13 @@ header {
   z-index: 50;
 }
 
-/* Print Icon Hover Effect */
-.print-icon {
+/* Nav Icon Hover Effect */
+.nav-icon {
   display: inline-block;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.print-icon:hover {
+.nav-icon:hover {
   transform: translateY(-2px) scale(1.1);
   filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3));
 }
