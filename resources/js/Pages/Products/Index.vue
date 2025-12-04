@@ -67,43 +67,47 @@ console.log("Produk dari Laravel:", props.products);
   <Navbar />
   <div class="bg-amber-50 min-h-screen pt-24 pb-16">
     <!-- Header -->
-    <div class="text-center py-16">
+    <div class="text-center pt-8 pb-16">
       <h1 class="text-4xl font-bold text-pink-700 tracking-tight">Our Menu</h1>
     </div>
 
-    <!-- 🔽 Filter kategori + 🔍 Search bar -->
-    <div class="max-w-4xl mx-4 flex flex-col sm:flex-row gap-4 px-8 mb-8">
-      <!-- Dropdown kategori dengan animasi keren 🎨 -->
-      <div class="w-full sm:w-1/3">
+    <!-- 🔽 Filter kategori + 🔍 Search bar — sejajar & rata kanan -->
+    <div class="w-full flex flex-col sm:flex-row justify-end items-center gap-4 px-8 mb-8">
+
+      <!-- Dropdown kategori -->
+      <div class="w-52">
         <CustomDropdown
           v-model="selectedCategory"
           :options="categoryOptions"
           placeholder="Semua Kategori"
+          class="h-12"
         />
       </div>
 
-      <div class="relative flex-1">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Cari produk..."
-          class="search-input w-full px-4 py-3 pl-12 rounded-full border-2 border-pink-200 focus:outline-none focus:border-pink-400 transition-all duration-300"
-        />
-        <svg
-          class="search-icon absolute left-4 top-3.5 h-5 w-5 text-pink-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          ></path>
-        </svg>
-      </div>
+<!-- Search bar — versi lebih kecil -->
+<div class="relative w-48 sm:w-52 md:w-56">
+  <input
+    type="text"
+    v-model="searchQuery"
+    placeholder="Cari..."
+    class="w-full h-11 pl-10 pr-3 rounded-full border border-pink-200 focus:outline-none focus:border-pink-400 text-sm transition-all duration-200 search-input"
+  />
+  <svg
+    class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-pink-400 pointer-events-none"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    ></path>
+  </svg>
+</div>
+
     </div>
 
     <!-- Daftar Produk -->
@@ -217,7 +221,6 @@ console.log("Produk dari Laravel:", props.products);
   box-shadow: 
     0 8px 16px rgba(236, 72, 153, 0.2),
     0 4px 8px rgba(236, 72, 153, 0.15),
-    0 0 20px rgba(236, 72, 153, 0.1),
     inset 0 1px 1px rgba(255, 255, 255, 0.9);
   transform: translateY(-2px);
   animation: shimmer 2s ease-in-out infinite;

@@ -123,7 +123,6 @@ const censorPhone = (phone) => {
   @apply font-sans bg-[#faead8] min-h-screen;
 }
 
-
 /* Konten utama */
 .main-content {
   display: flex;
@@ -133,11 +132,11 @@ const censorPhone = (phone) => {
 
 .payment-history-card {
   background-color: #f93679;
-  border-radius: 15px;
+  border-radius: 20px;
   box-shadow: 0 10px 30px rgba(255, 64, 129, 0.3);
   padding: 30px;
   width: 100%;
-  max-width: 800px;
+  max-width: 850px;
 }
 
 /* Header */
@@ -145,9 +144,11 @@ const censorPhone = (phone) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 15px;
+  gap: 12px;
   position: relative;
-  top: 30px;
+  top: 10px;
 }
 
 .section-title {
@@ -155,16 +156,17 @@ const censorPhone = (phone) => {
   font-size: 1.8rem;
   margin: 0;
   position: relative;
-  bottom: 20px;
+  bottom: 5px;
 }
 
 /* Search Bar */
 .search-container {
   background-color: white;
   border-radius: 25px;
-  padding: 6px 12px;
-  height: 30px;
+  padding: 6px 14px;
+  height: 35px;
   width: 300px;
+  max-width: 100%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
@@ -173,22 +175,24 @@ const censorPhone = (phone) => {
   border: none;
   cursor: pointer;
   color: #555;
-  font-size: 16px;
+  font-size: 18px;
+  width: 40px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Table */
 .table-container {
   overflow-x: auto;
-}
-
-.history-data {
-  background-color: white;
+  border-radius: 12px;
+  margin-top: 20px;
 }
 
 .payment-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
 .payment-table th,
@@ -204,6 +208,11 @@ const censorPhone = (phone) => {
   color: #555;
 }
 
+.history-data {
+  background-color: white;
+}
+
+/* Status colors */
 .status-pending {
   color: #ffc107;
   font-weight: bold;
@@ -219,5 +228,61 @@ const censorPhone = (phone) => {
 .status-cancelled {
   color: #e74c3c;
   font-weight: bold;
+}
+
+/* ============================= */
+/*        RESPONSIVE MODE        */
+/* ============================= */
+
+/* Tablet / HP besar */
+@media (max-width: 768px) {
+  .payment-history-card {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .search-container {
+    width: 100%;
+    height: 38px;
+  }
+
+  .payment-table th,
+  .payment-table td {
+    font-size: 0.85rem;
+    padding: 10px 8px;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 480px) {
+  .payment-history-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .search-container {
+    height: 38px;
+    padding: 8px 14px;
+    width: 100%;
+  }
+
+  .payment-table th,
+  .payment-table td {
+    padding: 8px 6px;
+    font-size: 0.85rem;
+  }
 }
 </style>
