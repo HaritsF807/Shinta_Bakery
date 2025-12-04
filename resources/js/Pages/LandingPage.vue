@@ -194,7 +194,107 @@ We're ready to present a wide variety of delicious cakes, from classics to moder
       </div>
     </section>
 
-    <!-- 🌸 Our Story -->
+    <!-- � Testimonials Section -->
+    <section class="py-20 bg-pink-50 reveal">
+      <div class="container mx-auto px-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-pink-600 mb-4 text-center">
+          What Our Customers Say
+        </h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          Don't just take our word for it — hear from our happy customers!
+        </p>
+
+        <!-- Carousel Container -->
+        <div v-if="props.testimonials && props.testimonials.length > 0" class="relative max-w-5xl mx-auto">
+          <!-- Carousel Wrapper -->
+          <div class="overflow-hidden">
+            <div 
+              class="flex transition-transform duration-500 ease-in-out"
+              :style="{ transform: `translateX(-${currentSlide * 100}%)` }"
+            >
+              <!-- Testimonial Cards -->
+              <div
+                v-for="(testimonial, index) in props.testimonials"
+                :key="index"
+                class="w-full flex-shrink-0 px-4"
+              >
+                <div class="bg-white p-8 md:p-10 rounded-2xl shadow-lg mx-auto max-w-3xl border border-pink-100">
+                  <!-- Quote Icon -->
+                  <div class="text-pink-300 text-5xl mb-4 text-center">"</div>
+                  
+                  <!-- Rating Stars -->
+                  <div class="flex gap-1 mb-6 justify-center">
+                    <span
+                      v-for="star in 5"
+                      :key="star"
+                      class="text-2xl"
+                      :class="star <= testimonial.rating ? 'text-yellow-400' : 'text-gray-300'"
+                    >
+                      ⭐
+                    </span>
+                  </div>
+
+                  <!-- Comment -->
+                  <p class="text-gray-700 text-lg md:text-xl mb-8 italic leading-relaxed text-center">
+                    {{ testimonial.comment || 'Great product!' }}
+                  </p>
+
+                  <!-- Customer Info -->
+                  <div class="border-t border-pink-100 pt-6 text-center">
+                    <p class="font-semibold text-pink-700 text-lg">
+                      {{ testimonial.customer_name }}
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                      {{ testimonial.created_at }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <button
+            @click="prevSlide"
+            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-pink-100 text-pink-600 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 z-10"
+            :class="{ 'opacity-50 cursor-not-allowed': currentSlide === 0 }"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            @click="nextSlide"
+            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-pink-100 text-pink-600 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110 z-10"
+            :class="{ 'opacity-50 cursor-not-allowed': currentSlide === props.testimonials.length - 1 }"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <!-- Dots Indicator -->
+          <div class="flex justify-center gap-2 mt-8">
+            <button
+              v-for="(testimonial, index) in props.testimonials"
+              :key="index"
+              @click="currentSlide = index"
+              class="w-3 h-3 rounded-full transition-all duration-300"
+              :class="currentSlide === index ? 'bg-pink-600 w-8' : 'bg-pink-300 hover:bg-pink-400'"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else class="text-center py-12">
+          <p class="text-gray-500 text-lg">
+            🌸 Be the first to share your experience with us!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- �🌸 Our Story -->
     <section id="our-story" class="py-20 bg-pink-100 text-center reveal">
       <div class="container mx-auto max-w-3xl">
         <h2 class="text-3xl font-bold text-pink-700 mb-6">Our Story</h2>
@@ -213,22 +313,56 @@ We're ready to present a wide variety of delicious cakes, from classics to moder
 <script setup>
 import Navbar from "../Components/Navbar.vue";
 import { Link } from "@inertiajs/vue3";
-import { defineProps, onMounted } from "vue";
+import { defineProps, onMounted, onUnmounted, ref } from "vue";
 
 const props = defineProps({
   categories: Array,
+  testimonials: Array
 });
 
-onMounted(() => {
-  const elements = document.querySelectorAll(".reveal");
+// 🎠 Carousel State
+const currentSlide = ref(0);
+let autoSlideInterval = null;
 
+// 🔄 Next Slide
+const nextSlide = () => {
+  if (props.testimonials && currentSlide.value < props.testimonials.length - 1) {
+    currentSlide.value++;
+  } else {
+    currentSlide.value = 0; // Loop back to start
+  }
+};
+
+// ⬅️ Previous Slide
+const prevSlide = () => {
+  if (currentSlide.value > 0) {
+    currentSlide.value--;
+  } else if (props.testimonials) {
+    currentSlide.value = props.testimonials.length - 1; // Loop to end
+  }
+};
+
+onMounted(() => {
+  // Reveal animation
+  const elements = document.querySelectorAll(".reveal");
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) entry.target.classList.add("visible");
     });
   });
-
   elements.forEach((el) => observer.observe(el));
+
+  // ⏱️ Auto-slide every 5 seconds for testimonials
+  if (props.testimonials && props.testimonials.length > 1) {
+    autoSlideInterval = setInterval(nextSlide, 5000);
+  }
+});
+
+// 🧹 Cleanup interval on unmount
+onUnmounted(() => {
+  if (autoSlideInterval) {
+    clearInterval(autoSlideInterval);
+  }
 });
 </script>
 

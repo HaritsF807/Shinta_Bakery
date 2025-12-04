@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Category;
+use App\Models\Testimonial;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -16,8 +17,22 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     $categories = Category::all();
+    
+    // 🌟 Fetch top testimonials for Landing Page
+    $testimonials = Testimonial::where('rating', '>=', 4)
+        ->latest()
+        ->take(6)
+        ->get()
+        ->map(fn($t) => [
+            'customer_name' => $t->customer_name,
+            'rating' => $t->rating,
+            'comment' => $t->comment,
+            'created_at' => $t->created_at->diffForHumans(),
+        ]);
+    
     return Inertia::render('LandingPage', [
         'categories' => $categories,
+        'testimonials' => $testimonials,
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
