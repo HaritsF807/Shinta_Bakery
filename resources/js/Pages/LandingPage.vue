@@ -187,7 +187,7 @@ We're ready to present a wide variety of delicious cakes, from classics to moder
 
         <div class="md:w-1/2 flex justify-center">
           <img
-            src="/images/LandingPage/group 19.png"
+            src="/images/LandingPage/Group 19.png"
             class="w-80 sm:w-96 md:w-[480px]"
           />
         </div>
